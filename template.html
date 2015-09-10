@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Report for {{title}}</title>
+    <meta name="Description" content="Colorado Learning Attitudes about Science Survey for Experimental Physics (E-CLASS)" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+
+    <meta name="Author" content="John Mark Aiken" />
+
+    <link href="http://acrossthebelly.com/ECLASS/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    {% for link in navbar[0] %}
+                        <span class="icon-bar"></span>
+                    {% endfor %}
+                </button>
+                <a class="navbar-brand" href="report.htm">E-CLASS</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <nav class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    {% for link in navbar %}
+                    <li class="active"><a href="{{ link[1] }}">{{ link[0] }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </header>
+
+    <!-- Report document -->
+    {% if page == 'report' %}
+    <main class="container">
+  
+        <header class="container">
+            <h1>
+                Colorado Learning Attitudes about Science Survey for Experimental Physics (E-CLASS)
+            </h1>
+            <p>
+                Thank you for participating in the Colorado Learning Attitudes about Science Survey for
+                Experimental Physics (E-CLASS). We hope you find this report helpful for learning more
+                about how your students think about experimental physics. If you have questions about
+                he survey or the results, or if you would like to make suggestions to improve the
+                usefulness of the survey and report, we have two ways to hear your voice:
+            </p>
+
+            <ul>
+                <li><a href="http://tinyurl.com/E-CLASS-Feedback">Complete a Six Question Survey</a></li>
+                <li>Email your questions or thoughts directly to our research team at: <a href={{email}}></a></li>
+            </ul>
+
+            <p>
+                Sincerly,<br />
+                Benjamin Zwickl, Bethany Wilcox, Noah Finkelstein, and Heather Lewandowski
+            </p>
+        </header>
+
+        <section class="container">
+            <h2>
+                Overall Results for your class
+            </h2>
+            <div class="row">
+                <figure class="col-md-6">
+                    <table class="table table-striped table-bordered">
+                        {% for row in table1 %}
+                            <tr>
+                                <td>{{ row[0] }} </td>
+                                <td align="right"> {{ row[1] }}</td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                    <figcaption>
+                        TABLE 1. Summary of class participation. For a description of what qualifies as a valid response, see the "How to read this report" tab.
+                    </figcaption>
+
+                </figure>
+
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/Overall_ECLASS_Summary.png" alt="Overall E-CLASS Perfomance" />
+                    <figcaption>
+                        FIG. 5. Comparison between overall pre and post scores for students' personal views on What do YOU think
+                        when doing experiments for class? Your class (Red) is compared with all students in similar level
+                        classes (Blue), (i.e., calculus-based introductory-level physics labs). The error bars indicate a 95%
+                        confidence interval. The overall mean shown here averages over all students and all statements on the survey.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2>
+                How do students' personal views change in your course compared to other courses?
+            </h2>
+            <div class="row">
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/All_Questions_pre_post_change1.PNG" />
+                    <figcaption>
+                        FIG. 6. Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
+                        for your class (Red) and all students in similar level classes (i.e., calculus-based introductory-level) (Blue).
+                        Figures 6 and 7 should be viewed together. The circles show the pre-survey values. The arrows indicate the pre
+                        to post changes. The shaded bars indicate a 95% confidence interval. The responses are ordered by the
+                        expert-like fraction in the pre-survey.
+                    </figcaption>
+                </figure>
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/All_Questions_pre_post_change2.PNG" />
+                    <figcaption>
+                        FIG. 7. Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
+                        for your class (Red) and all students in similar level classes (i.e., calculus-based introductory-level) (Blue).
+                        Figures 6 and 7 should be viewed together. The circles show the pre-survey values. The arrows indicate the pre
+                        to post changes. The shaded bars indicate a 95% confidence interval. The responses are ordered by the
+                        expert-like fraction in the pre-survey.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2>
+                What did students think was important for earning a good grade in your course and other similar courses?
+            </h2>
+            <div class="row">
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/Importance_for_grade_plot_0.PNG" />
+                    <figcaption>
+                        FIG. 8. An ordered plot of students' views of importance of different activities for earning a good grade in your class
+                        and in similar level classes, which refers to the set of students in other calculus-based introductory-level classes.
+                        Figures 8 and 9 should be viewed together.
+                    </figcaption>
+                </figure>
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/Importance_for_grade_plot_1.PNG" />
+                    <figcaption>
+                        FIG. 9. An ordered plot of students' views of importance of different activities for earning a good grade in your class
+                        and in similar level classes, which refers to the set of students in other calculus-based introductory-level classes.
+                        Figures 8 and 9 should be viewed together.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2>
+                Differences between "What do YOU think?" and "What would experimental physicists say...?"
+            </h2>
+            <div class="row">
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/All_Questions_you_vs_physicist_split_1.PNG" />
+                    <figcaption>
+                        FIG. 11. Comparison for your class between changes in students' personal views versus their views about professional
+                        physicists. What do YOU think... (Red) shows the change in students' response to "What do YOU think when doing
+                        experiments for class?" This red data is the same as the red data in Figs. 6 and 7. "What would experimental
+                        physicists say..." (Green) shows the change in students response to "What would experimental physicists say about
+                        their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
+                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
+                    </figcaption>
+                </figure>
+                <figure class="col-md-6">
+                    <img class="img-responsive" src="Images/All_Questions_you_vs_physicist_split_2.PNG" />
+                    <figcaption>
+                        FIG. 12. Comparison for your class between changes in students' personal views versus their views about professional
+                        physicists. What do YOU think... (Red) shows the change in students' response to "What do YOU think when doing
+                        experiments for class?" This red data is the same as the red data in Figs. 6 and 7. "What would experimental
+                        physicists say..." (Green) shows the change in students response to "What would experimental physicists say about
+                        their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
+                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2>
+                Follow-up questions about course interest and career plans
+            </h2>
+            <div class="row">
+                <figure class="col-md-4">
+                    <img class="img-responsive" src="Images/Current_Major.png" />
+                    <figcaption>
+                        FIG. 13. Distribution of students by current declared major. Your class (Red) refers to your own course. Similar level
+                        classes (Blue) refers to a set of students in all classes at the calculus-based introductory-level.
+                    </figcaption>
+                </figure>
+                <figure class="col-md-4">
+                    <img class="img-responsive" src="Images/Physics_Interest.png" />
+                    <figcaption>
+                        FIG. 14. Students' current interest in physics. Your class (Red) refers to your own course. Similar level classes (Blue)
+                        refers to a set of students in all classes at the calculus-based introductory-level.
+                    </figcaption>
+                </figure>
+                <figure class="col-md-4">
+                    <img class="img-responsive" src="Images/Interest_Change.png" />
+                    <figcaption>
+                        FIG. 15. Change in students' interest in physics. Your class (Red) refers to your own course. Similar level classes
+                        (Blue) refers to a set of students in all classes at the calculus-based introductory-level.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+    </main>
+
+    {% elif page == 'howtoread' %}
+    <main class="container">
+
+        <header class="container">
+
+            <h1>
+                A Sample E-CLASS Question
+            </h1>
+
+            <p>The E-CLASS survey asks students to express their attitudes about doing experimental physics.  As in the example shown in Fig. 1, most statements have three parts:</p>
+            <ol>
+                <li> What do YOU think when doing experiments for class? (a personal statement) </li>
+                <li> What would experimental physicists say about their research? (a statement about how students perceive professional physics)</li>
+                <li> How important for earning a good grade in this class was...? (a statement about how students perceive their laboratory course) </li>
+            </ol>
+            <p>
+                We ask "What do YOU think when doing experiments for class?" and "What would experimental physicists say about their research?" in both the pre-survey and post-survey, while the question about earning a good grade is asked only during the post-survey.  By asking all three questions we can evaluate how personal views change during a course, how their view of a professional physicist changes, and how those changes correlate with what students thought was important for earning a good grade.
+            </p>
+            <figure class="col-sm-12">
+                <br />
+                <p><strong>When doing a physics experiment, I don't think much about sources of systematic error.</strong></p>
+                <left>
+                    <table>
+                        <col width="300" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="130" />
+                        <col width="1" />
+                        <col width="1" />
+                        <col width="1" />
+                        <col width="140" />
+                        <tr bgcolor="#DDD"><td align="right"><font color="000">Strongly Disagree</font></td><td align="center">1</td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="left"><font color="000">Strongly Agree</font></td><td><td><td><td></tr>
+                        <tr>
+                            <td align="right"><em>What do YOU think when doing experiments for class?</em></td>
+                            <td><input type="radio" name="q01a" value=1></td>
+                            <td><input type="radio" name="q01a" value=2></td>
+                            <td><input type="radio" name="q01a" value=3></td>
+                            <td><input type="radio" name="q01a" value=4></td>
+                            <td><input type="radio" name="q01a" value=5></td>
+                            <td>
+                            <td>
+                            <td>
+                            <td>
+                            <td><font color="999999"><input type="radio" name="q01a" value=0 checked>not answered</font>
+                        </tr>
+                        <tr>
+                            <td align="right"><em>What would experimental physicists say about their research?</em></td>
+                            <td><input type="radio" name="q01b" value=1></td>
+                            <td><input type="radio" name="q01b" value=2></td>
+                            <td><input type="radio" name="q01b" value=3></td>
+                            <td><input type="radio" name="q01b" value=4></td>
+                            <td><input type="radio" name="q01b" value=5></td>
+                            <td>
+                            <td>
+                            <td>
+                            <td>
+                            <td><font color="999999"><input type="radio" name="q01b" value=0 checked>not answered</font>
+                        </tr>
+                    </table>
+                </left>
+                <left>
+                    <table>
+                        <col width="300" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="20" />
+                        <col width="130" />
+                        <col width="1" />
+                        <col width="1" />
+                        <col width="1" />
+                        <col width="140" />
+                        <tr bgcolor="#DDD">
+                            <td align="right"><font color="000">Unimportant</font></td>
+                            <td align="center">1</td>
+                            <td align="center">2</td>
+                            <td align="center">3</td>
+                            <td align="center">4</td>
+                            <td align="center">5</td>
+                            <td align="left"><font color="000">Very Important</font></td>
+                            <td>
+                            <td>
+                            <td>
+                            <td>
+                        </tr>
+                        <tr bgcolor="#FFFFFF">
+                            <td align="right"><em>How important for earning a good grade in this class was <b> thinking about sources of systematic error?</b></em></td>
+                            <td><input type="radio" name="q02c" value=1></td>
+                            <td><input type="radio" name="q02c" value=2></td>
+                            <td><input type="radio" name="q02c" value=3></td>
+                            <td><input type="radio" name="q02c" value=4></td>
+                            <td><input type="radio" name="q02c" value=5></td>
+                            <td>
+                            <td>
+                            <td>
+                            <td>
+                            <td><font color="777777"><input type="radio" name="q02c" value=0 checked>not answered</font>
+                        </tr>
+                    </table>
+                </left>
+                <figcaption> FIG. 1 A set of three examples questions around one key statement in the survey.</figcaption>
+            </figure>
+        </header>
+
+        <header class="container">
+
+            <h1>
+                Representing Students' Pre/Post shifts
+            </h1>
+            <p>
+                The arrow in Fig. 4 shows the shift between the pre- and post-survey. The shaded bar shows a 95% likelihood interval. Given the observed distribution of pre-responses, we would expect the expert-like fraction to lie within that band 95% of the time. The larger the arrow is compared to the shaded bar, the less likely the change could have occurred by chance.
+            </p>
+            <figure>
+                <img class="img-responsive" src="Images/Single_Question_pre_post_change.png" />
+            </figure>
+            <figcaption>
+                4. A simple representation of the change in students' attitudes during the semester. The circle shows the pre-survey values. The arrow indicates the pre to post change. The shaded bar indicates a 95% confidence interval.
+            </figcaption>
+        </header>
+
+        <header class="container">
+            <h1>
+                Identifying Valid Responses
+            </h1>
+            <p>In order for a student’s response to be considered valid and included in the analysis (e.g Table 1), it needs to pass several basic filters:</p>
+
+                <ol>
+                    <li>The student must complete the survey (i.e., click through all the way to the end)</li>
+                    <li>The student must select a response for at least one question</li>
+                    <li>The student must respond correctly (i.e., ‘agree’ not ‘strongly agree’) to the filtering question used to eliminate responses from students who are not reading the questions.</li>
+                    <li>Only the first complete response for each student is included (i.e., duplicate responses from a single student are removed)</li>
+                </ol>
+            
+        </header>
+
+        <header class="container">
+            <!--p>
+                In Fig. 4, the circle shows the fraction of the class with an expert-like response to the statement (i.e., "Disagree" or "Strongly Disagree") on the pre-survey . The arrow in Fig. 4 shows the shift between the pre- and post-survey. The shaded bar shows a 95% likelihood interval. Given the observed distribution of pre-responses, we would expect the expert-like fraction to lie within that band 95% of the time. The larger the arrow is compared to the shaded bar, the less likely the change could have occured by chance.
+            </p-->
+            <!--figure>
+                <img class="img-responsive" src="Images/Single_Question_pre_post_change.png" />
+                <figcaption>
+                    4. A simple representation of the change in students' attitudes during the semester. The circle shows the pre-survey values. The arrow indicates the pre to post change. The shaded bar indicates a 95% confidence interval.
+                </figcaption>
+            <//figure-->
+
+        </header>
+
+        <footer>
+            <br /><br /><br /><br />
+        </footer>
+
+    </main>
+
+    {% elif page == 'analysis' %}
+    <!--header class="container">
+        <h1>
+            A sample E-CLASS question
+        </h1>
+
+        <p>The E-CLASS survey asks students to express their attitudes about doing experimental physics.  As in the example shown in Fig. 1, most statements have three parts:</p>
+        <ol>
+            <li> What do YOU think when doing experiments for class? (a personal statement) </li>
+            <li> What would experimental physicists say about their research? (a statement about how students perceive professional physics)</li>
+            <li> How important for earning a good grade in this class was...? (a statement about how students perceive their laboratory course) </li>
+        </ol>
+        <p>
+            We ask "What do YOU think when doing experiments for class?" and "What would experimental physicists say about their research?" in both the pre-survey and post-survey, while the question about earning a good grade is asked only during the post-survey.  By asking all three questions we can evaluate how personal views change during a course, how their view of a professional physicist changes, and how those changes correlate with what students thought was important for earning a good grade.
+            You can see a copy of the Spring 2013 surveys at <a href="http://tinyurl.com/E-CLASS-Sp13-Pre" target="_new">tinyurl.com/E-CLASS-Sp13-Pre</a> (Pre) and <a href="http://tinyurl.com/E-CLASS-Sp13-Post" target="_new">tinyurl.com/E-CLASS-Sp13-Post</a> (Post).
+        </p>
+
+    </!--header>
+    <div class="container">
+        <figure class="col-sm-12">
+            <br />
+            <p><strong>When doing a physics experiment, I don't think much about sources of systematic error.</strong></p>
+            <left>
+                <table>
+                    <col width="300" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="130" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="140" />
+                    <tr bgcolor="#DDD"><td align="right"><font color="000">Strongly Disagree</font></td><td align="center">1</td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="left"><font color="000">Strongly Agree</font></td><td><td><td><td></tr>
+                    <tr>
+                        <td align="right"><em>What do YOU think when doing experiments for class?</em></td>
+                        <td><input type="radio" name="q01a" value=1></td>
+                        <td><input type="radio" name="q01a" value=2></td>
+                        <td><input type="radio" name="q01a" value=3></td>
+                        <td><input type="radio" name="q01a" value=4></td>
+                        <td><input type="radio" name="q01a" value=5></td>
+                        <td>
+                        <td>
+                        <td>
+                        <td>
+                        <td><font color="999999"><input type="radio" name="q01a" value=0 checked>not answered</font>
+                    </tr>
+                    <tr>
+                        <td align="right"><em>What would experimental physicists say about their research?</em></td>
+                        <td><input type="radio" name="q01b" value=1></td>
+                        <td><input type="radio" name="q01b" value=2></td>
+                        <td><input type="radio" name="q01b" value=3></td>
+                        <td><input type="radio" name="q01b" value=4></td>
+                        <td><input type="radio" name="q01b" value=5></td>
+                        <td>
+                        <td>
+                        <td>
+                        <td>
+                        <td><font color="999999"><input type="radio" name="q01b" value=0 checked>not answered</font>
+                    </tr>
+                </table>
+            </left>
+            <left>
+                <table>
+                    <col width="300" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="20" />
+                    <col width="130" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="1" />
+                    <col width="140" />
+                    <tr bgcolor="#DDD">
+                        <td align="right"><font color="000">Unimportant</font></td>
+                        <td align="center">1</td>
+                        <td align="center">2</td>
+                        <td align="center">3</td>
+                        <td align="center">4</td>
+                        <td align="center">5</td>
+                        <td align="left"><font color="000">Very Important</font></td>
+                        <td>
+                        <td>
+                        <td>
+                        <td>
+                    </tr>
+                    <tr bgcolor="#FFFFFF">
+                        <td align="right"><em>How important for earning a good grade in this class was <b> thinking about sources of systematic error?</b></em></td>
+                        <td><input type="radio" name="q02c" value=1></td>
+                        <td><input type="radio" name="q02c" value=2></td>
+                        <td><input type="radio" name="q02c" value=3></td>
+                        <td><input type="radio" name="q02c" value=4></td>
+                        <td><input type="radio" name="q02c" value=5></td>
+                        <td>
+                        <td>
+                        <td>
+                        <td>
+                        <td><font color="777777"><input type="radio" name="q02c" value=0 checked>not answered</font>
+                    </tr>
+                </table>
+            </left>
+            <figcaption> FIG. 1 A set of three examples questions around one key statement in the survey.</figcaption>
+        </figure>
+    </div-->
+
+    <header class="container">
+        <h1>
+            An example of how we process students' responses to get pre-post changes...
+        </h1>
+
+        <p>
+            One key aspect of the E-CLASS survey is being able to look at how much laboratory courses shifted students attitudes over the course of a semester. There are many ways to visualize such a shift, but one of the easiest is shown in Fig. 4. This section goes over how students' responses are processed to make such a plot and to explain what it means.
+            First, we restrict our analysis to the subset of students who completed both the pre and post surveys. Figure 2 represents these data as a 2D histogram, which shows the number of students in your class who fell in to each possible paired (pre, post) response.
+        </p>
+        <figure>
+            <img class="img-responsive" src="Images/Single_Question_2D_pre_post_Hist.png" />
+            <figcaption>
+                2. A 2D histogram showing the number of students with each possible pair of pre and post responses.
+            </figcaption><br /><br />
+            <p>
+                We can reduce the amount of data to visualize by comparing side-by-side histograms of the pre and post distributions. This amounts to summing up along the rows to get the post distribution, and summing up along the columns to get the pre distribution.
+            </p>
+        </figure>
+        <figure>
+            <img class="img-responsive" src="Images/Single_Question_Interleaved_pre_post_Hist.png" />
+            <figcaption>
+                3. A histogram showing the distribution of students responses on the pre and post surveys.
+            </figcaption>
+        </figure>
+        <br /><br />
+        <p>
+            We can further simplify the data representation by reducing the distribution in Fig. 3 to a single number - the fraction of the class with an expert-like response, as is shown in Fig. 4. In Fig. 4, the circle shows the fraction of the class with an expert-like response to the statement (i.e., "Disagree" or "Strongly Disagree") on the pre-survey . The arrow in Fig. 4 shows the shift between the pre- and post-survey. The shaded bar shows a 95% likelihood interval. Given the observed distribution of pre-responses, we would expect the expert-like fraction to lie within that band 95% of the time. The larger the arrow is compared to the shaded bar, the less likely the change could have occured by chance.
+        </p>
+        <figure>
+            <img class="img-responsive" src="Images/Single_Question_pre_post_change.png" />
+            <figcaption>
+                4. A simple representation of the change in students' attitudes during the semester. The circle shows the pre-survey values. The arrow indicates the pre to post change. The shaded bar indicates a 95% confidence interval.
+            </figcaption>
+        </figure>
+
+    </header>
+
+    <footer>
+        <br /><br /><br /><br />
+    </footer>
+
+
+
+    {%elif page == 'questionlist' %}
+    <header class="container">
+        <h1>
+            Question List
+        </h1>
+        
+        <div class="table-responsive visible-lg visible-md">
+            <table class="table">
+                {% for q in questionlist %}
+                    <tr>
+                        <td>{{ q[0] }}</td>
+                        <td>{{ q[1] }}</td>
+                        <td>{{ q[2] }}</td>
+                    </tr>
+
+                {% endfor %}
+
+            </table>
+
+
+        </div>
+
+        <div class="visible-sm visible-xs">
+            <table class="table-responsive col-sm-12">
+                {% for q in questionlist %}
+                    <tr>
+                        <td>{{ q[0] }}</td>
+                        <td>{{ q[1] }}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+
+            <table class="table-responsive col-sm-12">
+                {% for q in questionlist %}
+                <tr>
+                    <td>{{ q[0] }}</td>
+                    <td>{{ q[2] }}</td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+    
+   
+    </header> <!--<!-- /.container -->
+
+    {% else %}
+    <header class="container">
+        <h1>YA DUN GOOFED!</h1>
+        <div class="col-md-6">
+            <p>This probably happened because your page variable is wrong. Or not.</p>
+        </div>
+    </header>
+
+    {% endif %}
+
+    <script src="http://acrossthebelly.com/ECLASS/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="http://acrossthebelly.com/ECLASS/Scripts/bootstrap.min.js"></script>
+</body>
+</html>
