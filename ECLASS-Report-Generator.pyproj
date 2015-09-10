@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{aca4369e-acce-48d2-baac-07fa0c4703f3}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>BuildReport.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="template.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuildReport.py" />
+    <Compile Include="CodeForTemplate.py" />
+    <Compile Include="DataCleaner.py" />
+    <Compile Include="legacy\All_basic_v3_Sp15.py" />
+    <Compile Include="legacy\Import_Sp15.py" />
+    <Compile Include="legacy\Sp15_reports.py" />
+    <Compile Include="legacy\Sp15_report_plots_v1.py" />
+    <Compile Include="UtilitiesForPlotting.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="legacy" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
