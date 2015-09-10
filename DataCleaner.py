@@ -1,4 +1,4 @@
-
+﻿
 
 import os
 import glob
@@ -27,8 +27,8 @@ def BuildAggregateDataFrame(filenames, coursetype, name):
         df = pd.concat([df, concat_df])
     return df
 
-def DeleteResponsesToDiscardQuestion(df):
-    df = df[df.q40a != 4]
+def DeleteResponsesToDiscardQuestion(dataframe):
+    dataframe = dataframe[dataframe.q40a != 4]
 
 def DeleteNotNeededColumns(df):
     """
@@ -40,7 +40,7 @@ def DeleteNotNeededColumns(df):
     for col in NotNeededColumns:
         del df[col]
 
-def ShiftNegativeQuestions(df):
+def ShiftNegativeQuestions(dataframe):
     """ 
     converts numbers to negative numbers for specific question columns
     """
@@ -66,11 +66,11 @@ def ShiftNegativeQuestions(df):
                         ,'q30b']
 
     for question in negativequestions:
-        df[question] = df[question] * -1 + 6
+        dataframe[question] = dataframe[question] * -1 + 6
 
 
 
-def MatchQuestionIDToQuestionText(df):
+def MatchQuestionIDToQuestionText(dataframe):
 
     questionIDToQuestionText = [('q01a', 'When doing an experiment, I try to understand how the experimental setup works. What do YOU think?')
                                 ,('q01b', 'When doing an experiment, I try to understand how the experimental setup works. What would an experimental physicist say about their research?')
@@ -158,24 +158,24 @@ def MatchQuestionIDToQuestionText(df):
                                 ,("q40a", "We use this statement to discard the survey of people who are not reading the questions. Please sele...-What do YOU think when doing experiments for class?")
                                 ,("q40b", "We use this statement to discard the survey of people who are not reading the questions. Please sele...-What would experimental physicists say about their research?")]
 
-def DeleteNANIdentifiers(df):
+def DeleteNANIdentifiers(dataframe):
     
     firstname_lastname_studentID = ['Q3_1_TEXT', 'Q3_2_TEXT', 'Q3_3_TEXT']
     #df = df[df.Q3_1_TEXT.notnull() == True]
     #df = df[df.Q3_2_TEXT.notnull() == True]
     #df = df[df.Q3_3_TEXT.notnull() == True]
-    df.dropna(subset=['Q3_1_TEXT', 'Q3_2_TEXT'], how='all', inplace=True)
-    df.dropna(subset=['Q3_2_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
-    df.dropna(subset=['Q3_1_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
+    dataframe.dropna(subset=['Q3_1_TEXT', 'Q3_2_TEXT'], how='all', inplace=True)
+    dataframe.dropna(subset=['Q3_2_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
+    dataframe.dropna(subset=['Q3_1_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
 
-def DeleteEmptyResponses(df):
+def DeleteEmptyResponses(dataframe):
     """
     Deletes rows where no survey questions were answered.
     """
-    df.dropna(thresh=18, inplace=True)
+    dataframe.dropna(thresh=18, inplace=True)
 
-def SaveDataFrameToCSV(df, name):
-    df.to_csv(name+'Munged_Aggregate_Data.csv', index=False)
+def SaveDataFrameToCSV(dataframe, name):
+    dataframe.to_csv(name+'Munged_Aggregate_Data.csv', index=False)
 
 def strtoint(s):
     """

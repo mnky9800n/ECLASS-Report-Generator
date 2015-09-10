@@ -1,4 +1,4 @@
-import jinja2
+﻿import jinja2
 import os
 import csv
 
@@ -61,9 +61,6 @@ class Report(object):
 
         self.templateVars = templateVars
         
-        #self.templateVars["page"] = page
-
-
         # jinja2 class variables
         self.templateLoader = jinja2.FileSystemLoader(searchpath=os.getcwd())
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)

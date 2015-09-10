@@ -27,14 +27,7 @@
     <Compile Include="BuildReport.py" />
     <Compile Include="CodeForTemplate.py" />
     <Compile Include="DataCleaner.py" />
-    <Compile Include="legacy\All_basic_v3_Sp15.py" />
-    <Compile Include="legacy\Import_Sp15.py" />
-    <Compile Include="legacy\Sp15_reports.py" />
-    <Compile Include="legacy\Sp15_report_plots_v1.py" />
     <Compile Include="UtilitiesForPlotting.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="legacy" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
