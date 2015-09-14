@@ -1,15 +1,13 @@
+﻿# pylint: disable=C0321
+# pylint: disable=C0303
+# pylint: disable=line-too-long
 
-# #Start
-
-# In[17]:
 
 q = Questions()
 qids = q.pre_ExperimentalPhysicistQuestionIDs
 
 #[q.questionIDToQuestionText[qid[:-2]] for qid in qids]
 
-
-# In[18]:
 
 # itemized survey question pipeline
 #
@@ -355,7 +353,6 @@ fig, ax = plotGradeData(data=course_df.ix[q.post_GradeQuestionIDs]['Fraction of 
 # In[30]:
 
 # """
-# TODO:
 
 # 1) remove uses of matched and replace with dataframes for historical and course data
 # """

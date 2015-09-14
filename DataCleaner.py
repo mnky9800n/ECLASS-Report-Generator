@@ -1,4 +1,7 @@
 ﻿
+# pylint: disable=C0321
+# pylint: disable=C0303
+# pylint: disable=line-too-long
 
 import os
 import glob
@@ -161,9 +164,6 @@ def MatchQuestionIDToQuestionText(dataframe):
 def DeleteNANIdentifiers(dataframe):
     
     firstname_lastname_studentID = ['Q3_1_TEXT', 'Q3_2_TEXT', 'Q3_3_TEXT']
-    #df = df[df.Q3_1_TEXT.notnull() == True]
-    #df = df[df.Q3_2_TEXT.notnull() == True]
-    #df = df[df.Q3_3_TEXT.notnull() == True]
     dataframe.dropna(subset=['Q3_1_TEXT', 'Q3_2_TEXT'], how='all', inplace=True)
     dataframe.dropna(subset=['Q3_2_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
     dataframe.dropna(subset=['Q3_1_TEXT', 'Q3_3_TEXT'], how='all', inplace=True)
@@ -216,7 +216,10 @@ def MergeQuestionResponses(df):
         df[q] = df[q].apply(merge)
 
 def cleanDataPipeline(dir):
-
+    """
+    scrapes directory for pre and post survey files to create
+    an aggregate cleaned csv of all course data.
+    """
     
     os.chdir(dir)
 

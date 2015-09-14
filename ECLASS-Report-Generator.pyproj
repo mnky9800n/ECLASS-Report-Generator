@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{aca4369e-acce-48d2-baac-07fa0c4703f3}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>BuildReport.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -27,6 +27,12 @@
     <Compile Include="BuildReport.py" />
     <Compile Include="CodeForTemplate.py" />
     <Compile Include="DataCleaner.py" />
+    <Compile Include="main.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Questions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UtilitiesForPlotting.py" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />

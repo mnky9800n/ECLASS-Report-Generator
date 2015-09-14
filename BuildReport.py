@@ -1,9 +1,12 @@
-﻿import jinja2
+﻿# pylint: disable=C0321
+# pylint: disable=C0303
+# pylint: disable=line-too-long
+import jinja2
 import os
 import csv
+from Questions import Questions
 
-
-class Report(object):
+class Report(Questions):
     """
     This class generates an html report based on
     graphs produced by the plotting class
@@ -21,7 +24,7 @@ class Report(object):
         # email (for contacting ECLASS representatives)
     """
 
-    def __init__(self, tableVals, templateVars, dir, debug=False):
+    def __init__(self, tableVals, templateVars, page, dir, debug=False):
         
         self.debug = debug
 
@@ -50,8 +53,6 @@ class Report(object):
             else:
                 raise ValueError(k + " NOT PRESENT!")
                 
-        # TODO check for value error if page identity is wrong.
-        #self.page = page
 
         # every directory should have it's own "howto", "analysis", and 
         # "questionlist" pages. This way users can link back and forth
@@ -76,19 +77,23 @@ class Report(object):
         these tabs
         """
         self.templateVars["navbar"] = zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
-                                ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
+                                          ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
+
+    #def _MakeQuestionList(self):
+    #    """
+    #    returns question list from csv formated like:
+    #    (question number, question type 1, question type 2)
+    #    """
+
+    #    with open(os.getcwd()+'/data/questionlist.csv', 'rt') as ql:
+    #        reader = csv.reader(ql)
+    #        questionlist = [row for row in reader]
+        
+    #        self.templateVars["questionlist"] = questionlist
 
     def _MakeQuestionList(self):
-        """
-        returns question list from csv formated like:
-        (question number, question type 1, question type 2)
-        """
+        self.templateVars["questionlist"] = self.questionList() 
 
-        with open(os.getcwd()+'/data/questionlist.csv', 'rt') as ql:
-            reader = csv.reader(ql)
-            questionlist = [row for row in reader]
-        
-            self.templateVars["questionlist"] = questionlist
 
     def _MakeTable(self):
         """
@@ -96,11 +101,11 @@ class Report(object):
         """
 
         table = zip(["Number of valid pre-responses"
-        ,"Number of valid post-responses"
-        ,"Number of matched responses"
-        ,"Reported number of students in class"
-        ,"Fraction of class participating in pre and post"
-        ],self.tableVals)
+                    ,"Number of valid post-responses"
+                    ,"Number of matched responses"
+                    ,"Reported number of students in class"
+                    ,"Fraction of class participating in pre and post"
+                    ],self.tableVals)
         self.templateVars['table1'] = table
 
     def _ProcessTemplate(self):
@@ -132,5 +137,6 @@ if __name__ == "__main__":
     R = Report(tableVals=[1,2,3,4,0.5]
                , templateVars={"title":"Example", "email":"mailto:replace@me.com"}
                , page="report"
-               , debug=True)
+               , debug=True
+               , dir='C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator')
     R.GenerateReport()
