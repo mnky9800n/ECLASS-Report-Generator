@@ -36,7 +36,6 @@ historical_data = matched
 
 course_data = matched[matched.courseID == 'CU_PHYS4430']
 
-#TODO add break statements here that identify the problem course
 try:
     historical_N = max(historical_data.count())
 except:

@@ -72,7 +72,7 @@ def ShiftNegativeQuestions(dataframe):
         dataframe[question] = dataframe[question] * -1 + 6
 
 
-
+# TODO: replace this with Question class
 def MatchQuestionIDToQuestionText(dataframe):
 
     questionIDToQuestionText = [('q01a', 'When doing an experiment, I try to understand how the experimental setup works. What do YOU think?')
@@ -228,35 +228,35 @@ def cleanDataPipeline(dir):
     for n in name:
         pre_filenames = glob.glob('*'+n+'.csv')
 
-        pre_df = BuildAggregateDataFrame(pre_filenames, coursetype='UpperDivision', name=n)
+        raw_df = BuildAggregateDataFrame(pre_filenames, coursetype='UpperDivision', name=n)
         #post_df = BuildAggregateDataFrame(post_filenames, coursetype='UpperDivision')
 
         #delete responses that didn't answer the checker question
-        DeleteResponsesToDiscardQuestion(pre_df) 
+        DeleteResponsesToDiscardQuestion(raw_df) 
         #print(pre_df.head())
 
         #Delete Not Needed Columns
-        DeleteNotNeededColumns(pre_df)
+        DeleteNotNeededColumns(raw_df)
 
         #Merge Questions
-        MergeQuestionResponses(pre_df)
+        MergeQuestionResponses(raw_df)
 
         #shift negative asked questions to positive to align 
-        ShiftNegativeQuestions(pre_df)
+        ShiftNegativeQuestions(raw_df)
         #print(pre_df['q02a'].head())
 
         #Remove Rows with Null first names, last names, studentIDs
-        DeleteNANIdentifiers(pre_df)
+        DeleteNANIdentifiers(raw_df)
         #print(pre_df.head())
 
         #Delete empty responses
-        DeleteEmptyResponses(pre_df)
+        DeleteEmptyResponses(raw_df)
 
         #convert IDs to ints (some IDs have strings)
-        pre_df.Q3_3_TEXT = pre_df.Q3_3_TEXT.apply(strtoint)
+        raw_df.Q3_3_TEXT = raw_df.Q3_3_TEXT.apply(strtoint)
 
         #write munged DataFrame to CSV
-        SaveDataFrameToCSV(pre_df, n)
+        SaveDataFrameToCSV(raw_df, n)
 
 
 if __name__ == "__main__":
