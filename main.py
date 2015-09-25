@@ -42,6 +42,7 @@ import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import shutil
 
 class NoCourseDataError(Exception):
     pass
@@ -138,22 +139,6 @@ if __name__ == "__main__":
 
     historical_raw_data = load_pre_post_data(pre=pre_hist, post=post_hist)
     
-    # TODO: Put historical_raw_data calculations here
-    historical_N = max(historical_raw_data.count())
-    historical_gender = historical_raw_data.groupby('Q54').Q54.size()/historical_raw_data.Q54.size
-    hist_valcnt_Q50 = historical_raw_data['Q50'].value_counts()
-    hist_n_Q50 = historical_raw_data['Q50'].size
-    hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
-    hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
-    historical_futurePlans = utilities.futurePlansData(historical_raw_data)
-    hist_valcnt_Q49 = historical_raw_data['Q49'].value_counts()
-    hist_valcnt_Q49 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_Q49, expectedRows=expectedRows_Q49)
-    hist_n_Q49 = historical_raw_data['Q49'].size
-    hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
-    hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
-    hist_valcnt_47 = historical_raw_data['Q47'].value_counts()
-    hist_valcnt_47 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_47, expectedRows=expectedRows_Q47)
-    hist_n_Q47 = historical_raw_data['Q47'].size
 
     DataCleaner.cleanDataPipeline(coursedir)
 
@@ -189,6 +174,31 @@ if __name__ == "__main__":
     grades_hist.columns = ['Confidence Interval (post)', 'Fraction of Students with Expert Like Response (post)']
     hist_df = pd.concat([df, grades_hist])
 
+    # historical data calculations
+    historical_N = max(historical_raw_data.count())
+    historical_gender = historical_raw_data.groupby('Q54').Q54.size()/historical_raw_data.Q54.size
+    
+    hist_valcnt_Q50 = historical_raw_data['Q50'].value_counts()
+    hist_n_Q50 = historical_raw_data['Q50'].size
+    hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
+    hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
+
+    hist_valcnt_Q49 = historical_raw_data['Q49'].value_counts()
+    hist_valcnt_Q49 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_Q49, expectedRows=expectedRows_Q49)
+    hist_n_Q49 = historical_raw_data['Q49'].size
+    hist_currentInterest = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
+    hist_currentInterest.columns = ['Similar level classes', 'conf (similar)']
+    
+    hist_valcnt_47 = historical_raw_data['Q47'].value_counts()
+    hist_valcnt_47 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_47, expectedRows=expectedRows_Q47)
+    hist_n_Q47 = historical_raw_data['Q47'].size
+    hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
+    hist_declaredMajor.columns = ['Similar level classes', 'conf (similar)']
+ 
+    historical_futurePlans = utilities.futurePlansData(historical_raw_data)
+    history_futureplans_df = pd.DataFrame({'Similar level classes':historical_futurePlans[:,0]}
+                                , index=historical_futurePlans[:,1]).astype('float64')
+
     for course, ID_date in zip(courseIDs,courseIDs_Date):
 
         # create dataframe of course data
@@ -196,7 +206,6 @@ if __name__ == "__main__":
 
         # calculate n-values for course data
      
-        #course_N = max(course_raw_data.count())
         course_N = max(individual_course_DF.count())
         if course_N == 0:
             raise NoCourseDataError("There was no data for course '{CourseName}'.".format(CourseName=course))
@@ -225,17 +234,19 @@ if __name__ == "__main__":
 
         # create directories based on course IDS from course data and date
         # TODO: Delete directory if exists
+
+
+        # TODO: Replace with make_directory function
         if not os.path.exists(ID_date):
             course_dir = parent_dir+ '\\' + ID_date
             print(course_dir)
-            os.makedirs(course_dir)
-
+            os.makedirs(course_dir, exist_ok=True)
 
         # create images directory
         course_img_dir = parent_dir+'\\' + ID_date + '\\images'
         if not os.path.exists(course_img_dir):
             print(course_img_dir)
-            os.makedirs(course_img_dir)
+            os.makedirs(course_img_dir, exist_ok=True)
 
         image_save_directory = course_img_dir + '\\'
 
@@ -251,7 +262,7 @@ if __name__ == "__main__":
         data = pd.DataFrame(data)
         data.index = ['pre', 'post']
         data.columns = ['Similar level courses', 'Your course']
-        ax = data.plot(kind='bar', yerr=error, color=['blue', 'red'], alpha=0.5)
+        ax = data.plot(kind='bar', yerr=error, color=['blue', 'red'], alpha=0.75)
         ax.set_ylim(0,1)
         ax.legend(loc='lower left')
         ax.set_title('Overall E-CLASS Score on\n"What do YOU think..." statements\nN(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
@@ -292,7 +303,7 @@ if __name__ == "__main__":
                                        , save_title='expertvsyou1.png'
                                        , qlen=qlen)
 
-        # TODO: plot expertvsyou2.png
+        # plot expertvsyou2.png
         itemized_survey_plotting_pipeline(hist_df=hist_df
                                        , course_df=course_df
                                        , question_block=q.pre_ExperimentalPhysicistQuestionIDs[:int(qlen/2)]
@@ -301,7 +312,7 @@ if __name__ == "__main__":
                                        , save_title='expertvsyou2.png'
                                        , qlen=qlen)
         
-        # TODO: plot grades1.png
+        # plot grades1.png
         qlen = len(q.post_GradeQuestionIDs)
         questions_plot1 = [question for question in q.post_GradeQuestionIDs[:int(qlen/2)]]
         questions_plot2 = [question for question in q.post_GradeQuestionIDs[int(qlen/2):]]
@@ -325,11 +336,11 @@ if __name__ == "__main__":
                        ,fig=fig
                        ,ax=ax
                        ,color='red')
-        fig.savefig(image_save_directory + 'grades1.png')
-        # TODO: plot grades2.png
+        fig.savefig(image_save_directory + 'grades1.png', bbox_inches='tight')
+        # plot grades2.png
 
         fig, ax = utilities.createFigureForItemizedSurveyData(questions=question_text_plot2, legendLabels=['Similiar level courses', 'Your course']
-                                           ,title='What do YOU think? and \nWhat would experimental physicists say \nabout their research? (part 2)')
+                                           ,title='How important for earning a good grade in this class was... (part 2)')
 
 
         fig, ax = utilities.plotGradeData(data=hist_df.ix[q.post_GradeQuestionIDs]['Fraction of Students with Expert Like Response (post)']
@@ -345,12 +356,10 @@ if __name__ == "__main__":
                                ,fig=fig
                                ,ax=ax
                                ,color='red')
-        fig.savefig(image_save_directory + 'grades2.png')
+        fig.savefig(image_save_directory + 'grades2.png', bbox_inches='tight')
 
-        # TODO: plot gender.png
+        # plot gender.png
 
-        
-        #course_gender = course_raw_data.groupby('Q54').Q54.size()/course_raw_data.Q54.size
         course_gender = individual_course_DF.groupby('Q54').Q54.size()/individual_course_DF.Q54.size
 
         gender_df = pd.DataFrame({'Similar level classes':historical_gender
@@ -368,19 +377,15 @@ if __name__ == "__main__":
         fig = ax.get_figure()
         fig.savefig(image_save_directory + 'gender.png',bbox_inches='tight')
 
-        # TODO: plot futureplans.png
+        # plot futureplans.png
 
 
         course_futurePlans = utilities.futurePlansData(individual_course_DF)
 
-        # TODO: move this outside of the for loop
-        history_df = pd.DataFrame({'Similar level classes':historical_futurePlans[:,0]}
-                                 , index=historical_futurePlans[:,1]).astype('float64')
-
         course_df = pd.DataFrame({'Your class':course_futurePlans[:,0]}
                                 , index=course_futurePlans[:,1]).astype('float64')
 
-        futurePlans_df = history_df.join(course_df)
+        futurePlans_df = history_futureplans_df.join(course_df)
 
         ax = futurePlans_df.plot(kind='barh', color=['blue', 'red'], alpha=0.75)
         ax.set_title('Future Plans\nN(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
@@ -389,7 +394,7 @@ if __name__ == "__main__":
         fig = ax.get_figure()
         fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight')
 
-        # TODO: plot shiftphysicsinterest.png
+        # plot shiftphysicsinterest.png
 
         course_valcnt = individual_course_DF['Q50'].value_counts()
         course_n = individual_course_DF['Q50'].size
@@ -411,19 +416,14 @@ if __name__ == "__main__":
         fig = ax.get_figure()
         fig.savefig(image_save_directory + 'gradespart1.png',bbox_inches='tight')
 
-        # TODO: plot currentinterest.png
-
-
-
-
+        # plot currentinterest.png
         course_valcnt = individual_course_DF['Q49'].value_counts()
-        #course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows)
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q49)
         course_n = individual_course_DF['Q49'].size
         course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
-        df = hist_interestShift.join(course_interestShift)
+        df = hist_currentInterest.join(course_interestShift)
 
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
@@ -440,14 +440,9 @@ if __name__ == "__main__":
 
 
 
-        # TODO: move this outside of the for loop
-        #hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n, n_LikertLevels=6) for val in hist_valcnt]))
-        #hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n, n_LikertLevels=6) for val in hist_valcnt_47]))
-        hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
-        hist_declaredMajor.columns = ['Similar level classes', 'conf (similar)']
+        # plot declaredmajor.png
 
         course_valcnt = individual_course_DF['Q47'].value_counts()
-        #course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows)
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q47)
         course_n = individual_course_DF['Q47'].size
         course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
