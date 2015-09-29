@@ -23,11 +23,11 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="index.html" />
     <Content Include="template.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildReport.py" />
-    <Compile Include="CodeForTemplate.py" />
     <Compile Include="DataCleaner.py" />
     <Compile Include="main.py">
       <SubType>Code</SubType>

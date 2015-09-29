@@ -1,4 +1,4 @@
-
+﻿
 class Questions:
     """
     Description:
@@ -15,6 +15,7 @@ class Questions:
     """
     
     def __init__(self):
+        # TODO : Delete this block, save for posterity (it's the only place with a complete question text)
         #self.questionIDToQuestionText = [('q01a', 'When doing an experiment, I try to understand how the experimental setup works. What do YOU think?')
         #                            ,('q01b', 'When doing an experiment, I try to understand how the experimental setup works. What would an experimental physicist say about their research?')
         #                            ,('q01c', 'How important for earning a good grade in this class was understanding how the experimental setup works?')

@@ -1,5 +1,5 @@
 ﻿
-
+# TODO : refactor using static classes
 """
 [0] import Questions, UtilitiesForPlotting, DataCleaner, BuildReport
 
@@ -43,12 +43,14 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import shutil
+import jinja2
 
 class NoCourseDataError(Exception):
     pass
 
 class NoArgsError(Exception):
     pass
+
 
 def load_pre_post_data(pre, post):
     """
@@ -130,7 +132,6 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
 if __name__ == "__main__":
 
     q = Questions.Questions()
-    # TODO: move all the question stuff here so it isn't done for every iteration
     expectedRows_Q49 = [1.,2.,3.,4.,5.,6.]
     questionAnswers = {1.0: 'Physics', 2.0: 'Chemistry', 3.0: 'Biochemistry', 4.0: 'Biology', 5.0: 'Engineering', 6.0: 'Engineering Physics', 7.0: 'Astronomy', 8.0: 'Astrophysics', 9.0: 'Geology/geophysics', 10.0: 'Math/Applied Math', 11.0: 'Computer Science', 12.0: 'Physiology', 13.0: 'Other Science', 14.0: 'Non-science Major', 15.0: 'Open option/Undeclared'}
     expectedRows_Q47 = [1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.,15.]
@@ -154,22 +155,22 @@ if __name__ == "__main__":
 
     parent_dir = os.getcwd()
 
-    # TODO: create expert like response data frame : pre history data
+    #  create expert like response data frame : pre history data
     pre_hist = utilities.expertLikeResponseDataFrame(rawdata_df=historical_raw_data
                                                     , columnIDs=q.pre_WhatDoYouThinkQuestionIDs+q.pre_ExperimentalPhysicistQuestionIDs
                                                     , CI_Calculator=utilities.confidenceInterval)
-    # TODO: create expert like response data frame : post history data
+    #  create expert like response data frame : post history data
     post_hist = utilities.expertLikeResponseDataFrame(rawdata_df=historical_raw_data
                                                      , columnIDs=q.post_WhatDoYouThinkQuestionIDs+q.post_ExperimentalPhysicistQuestionIDs
                                                      , CI_Calculator=utilities.confidenceInterval)
     
-    # TODO: create expert like response data frame : grades history data
+    #  create expert like response data frame : grades history data
     grades_hist = utilities.expertLikeResponseDataFrame(rawdata_df=historical_raw_data
                                                        ,columnIDs=q.post_GradeQuestionIDs
                                                        ,grades=True
                                                        , CI_Calculator=utilities.confidenceInterval)
     
-    # TODO: create combined dataframe of all data pre/post/grades
+    #  create combined dataframe of all data pre/post/grades
     df = pre_hist.join(post_hist, lsuffix=' (pre)', rsuffix=' (post)')
     grades_hist.columns = ['Confidence Interval (post)', 'Fraction of Students with Expert Like Response (post)']
     hist_df = pd.concat([df, grades_hist])
@@ -233,10 +234,6 @@ if __name__ == "__main__":
         course_df = pd.concat([df, grades_course])
 
         # create directories based on course IDS from course data and date
-        # TODO: Delete directory if exists
-
-
-        # TODO: Replace with make_directory function
         if not os.path.exists(ID_date):
             course_dir = parent_dir+ '\\' + ID_date
             print(course_dir)
@@ -250,6 +247,7 @@ if __name__ == "__main__":
 
         image_save_directory = course_img_dir + '\\'
 
+        # plot overall.png
         agg_df = hist_df.join(course_df, lsuffix=' [1]', rsuffix=' [2]')
         agg_df = agg_df.ix[[question[:-2] for question in q.pre_WhatDoYouThinkQuestionIDs]]
         agg_df = agg_df.mean()
@@ -337,8 +335,8 @@ if __name__ == "__main__":
                        ,ax=ax
                        ,color='red')
         fig.savefig(image_save_directory + 'grades1.png', bbox_inches='tight')
-        # plot grades2.png
 
+        # plot grades2.png
         fig, ax = utilities.createFigureForItemizedSurveyData(questions=question_text_plot2, legendLabels=['Similiar level courses', 'Your course']
                                            ,title='How important for earning a good grade in this class was... (part 2)')
 
@@ -359,7 +357,6 @@ if __name__ == "__main__":
         fig.savefig(image_save_directory + 'grades2.png', bbox_inches='tight')
 
         # plot gender.png
-
         course_gender = individual_course_DF.groupby('Q54').Q54.size()/individual_course_DF.Q54.size
 
         gender_df = pd.DataFrame({'Similar level classes':historical_gender
@@ -378,8 +375,6 @@ if __name__ == "__main__":
         fig.savefig(image_save_directory + 'gender.png',bbox_inches='tight')
 
         # plot futureplans.png
-
-
         course_futurePlans = utilities.futurePlansData(individual_course_DF)
 
         course_df = pd.DataFrame({'Your class':course_futurePlans[:,0]}
@@ -394,8 +389,7 @@ if __name__ == "__main__":
         fig = ax.get_figure()
         fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight')
 
-        # plot shiftphysicsinterest.png
-
+        # plot interestshift.png
         course_valcnt = individual_course_DF['Q50'].value_counts()
         course_n = individual_course_DF['Q50'].size
         
@@ -414,7 +408,7 @@ if __name__ == "__main__":
         ax.set_ylabel('Fraction of Students')
         ax.set_title('During the semester, my interest in physics. . .\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'gradespart1.png',bbox_inches='tight')
+        fig.savefig(image_save_directory + 'interestshift.png',bbox_inches='tight')
 
         # plot currentinterest.png
         course_valcnt = individual_course_DF['Q49'].value_counts()
@@ -437,11 +431,7 @@ if __name__ == "__main__":
         fig = ax.get_figure()
         fig.savefig(image_save_directory + 'currentinterest.png',bbox_inches='tight')
 
-
-
-
         # plot declaredmajor.png
-
         course_valcnt = individual_course_DF['Q47'].value_counts()
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q47)
         course_n = individual_course_DF['Q47'].size
@@ -464,6 +454,26 @@ if __name__ == "__main__":
         
         # TODO: create Report.html
 
-        # TODO: delete dataframe of course data
-        del course_df, futurePlans_df, gender_df, df
+        # copy the static pages into the course directory
+        for item in ['howtoread.html', 'analysis.html', 'questionlist.html']:
+            shutil.copy2(item, course_dir)
+
+        # generate the report.html
+        TemplateLoader = jinja2.FileSystemLoader(searchpath=os.getcwd())
+        TemplateEnv = jinja2.Environment(loader=TemplateLoader)
+        Template = TemplateEnv.get_template('template.html')
+        RenderedTemplate = Template.render({'title': 'school name'
+                        , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
+                        , 'email': "Bethany.Wilcox@colorado.edu"
+                        , 'table1': [['no'],['data']]
+                        , 'questionlist': q.questionIDToQuestionText
+                        , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
+                                          ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
+                        , 'page': 'report'})
+        with open(course_dir + '//report.html', 'wb+') as report:
+            report.write(RenderedTemplate.encode())
+            report.close()
+        
+        # delete dataframe of course data
+        del course_df, futurePlans_df, gender_df, df, 
         plt.close('all')
