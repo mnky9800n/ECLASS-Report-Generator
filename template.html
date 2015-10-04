@@ -21,7 +21,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     {% for link in navbar[0] %}
-                        <span class="icon-bar"></span>
+                        <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</span>
                     {% endfor %}
                 </button>
                 <a class="navbar-brand" href="report.htm">E-CLASS</a>
@@ -49,13 +49,14 @@
                 Thank you for participating in the Colorado Learning Attitudes about Science Survey for
                 Experimental Physics (E-CLASS). We hope you find this report helpful for learning more
                 about how your students think about experimental physics. If you have questions about
-                he survey or the results, or if you would like to make suggestions to improve the
+                the survey or the results, or if you would like to make suggestions to improve the
                 usefulness of the survey and report, we have two ways to hear your voice:
             </p>
 
             <ul>
                 <li><a href="http://tinyurl.com/E-CLASS-Feedback">Complete a Six Question Survey</a></li>
-                <li>Email your questions or thoughts directly to our research team at: <a href={{email}}></a></li>
+                <!--li>Email your questions or thoughts directly to our research team at: <a href={{email}}></a></li-->
+                <li>Email your questions or thoughts directly to our research team at: <a href="eclass@colorado.edu"></a></li>
             </ul>
 
             <p>

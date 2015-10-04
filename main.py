@@ -1,5 +1,4 @@
 ﻿
-# TODO : refactor using static classes
 """
 [0] import Questions, UtilitiesForPlotting, DataCleaner, BuildReport
 
@@ -393,6 +392,8 @@ if __name__ == "__main__":
         course_valcnt = individual_course_DF['Q50'].value_counts()
         course_n = individual_course_DF['Q50'].size
         
+        # TODO : replace confidence interval calculator with (0,course_n)
+        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
@@ -414,6 +415,9 @@ if __name__ == "__main__":
         course_valcnt = individual_course_DF['Q49'].value_counts()
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q49)
         course_n = individual_course_DF['Q49'].size
+        
+        # TODO : replace confidence interval calculator with (0,course_n)
+        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
@@ -435,6 +439,9 @@ if __name__ == "__main__":
         course_valcnt = individual_course_DF['Q47'].value_counts()
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q47)
         course_n = individual_course_DF['Q47'].size
+
+        # TODO : replace confidence interval calculator with (0,course_n)
+        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
         course_declaredMajor.columns = ['Your class', 'conf (your)']
 
