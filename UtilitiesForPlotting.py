@@ -353,7 +353,8 @@ def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
         if xpost < xpre:
             ax.plot(xpost, y+offset, marker='<', color='red', markersize=15, mew=1)
         elif xpost > xpre:
-            ax.plot(xpost, y+offset, marker='>', color='green', markersize=15, mew=1)
+            # ax.plot(xpost, y+offset, marker='>', color='green', markersize=15, mew=1)
+            ax.plot(xpost, y+offset, marker='>', color='red', markersize=15, mew=1)
         elif xpost == xpre:
             pass
         
