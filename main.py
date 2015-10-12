@@ -242,12 +242,18 @@ if __name__ == "__main__":
             os.makedirs(course_dir, exist_ok=True)
 
         # create images directory
-        course_img_dir = parent_dir+'\\' + ID_date + '\\images'
+        course_img_dir = parent_dir+'\\' + ID_date + '\\Images'
         if not os.path.exists(course_img_dir):
             print(course_img_dir)
             os.makedirs(course_img_dir, exist_ok=True)
 
         image_save_directory = course_img_dir + '\\'
+
+        # copy stock images
+        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_2D_pre_post_Hist.png', image_save_directory)
+        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_Interleaved_pre_post_Hist.png', image_save_directory)
+        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_pre_post_change.png', image_save_directory)
+
 
         # plot overall.png
         agg_df = hist_df.join(course_df, lsuffix=' [1]', rsuffix=' [2]')

@@ -311,7 +311,8 @@ def createFigureForItemizedSurveyData(questions, legendLabels, title):
     ax.plot([],[],color='blue', linewidth=12.5)
     ax.plot([],[],color='red', linewidth=12.5)
 
-    ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=2)
+    # ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=2)
+    ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -numberOfQuestion/100.0), fancybox=True, shadow=True, ncol=2)
 
 
     ax.grid(b=True, which='major', color='k'
