@@ -363,7 +363,8 @@ def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
 
 def plotGradeData(data, confData, offset, fig, ax, color):
     y_base = [y+1 for y in range(len(data))]
-    for x, xconf, y in zip(data, confData, y_base):
+    #for x, xconf, y in zip(data, confData, y_base):
+    for x, xconf, y in sorted(zip(data, confData, y_base)):
         
         #plot confidence interval
         ax.plot([x-xconf, x+xconf], [y+offset, y+offset], color=color, linewidth=12.5, alpha=0.2)
