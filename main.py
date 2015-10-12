@@ -180,19 +180,22 @@ if __name__ == "__main__":
     
     hist_valcnt_Q50 = historical_raw_data['Q50'].value_counts()
     hist_n_Q50 = historical_raw_data['Q50'].size
-    hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
+    # hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
+    hist_interestShift = pd.DataFrame(np.array([(0, hist_n_Q50) for val in hist_valcnt_Q50]))
     hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
 
     hist_valcnt_Q49 = historical_raw_data['Q49'].value_counts()
     hist_valcnt_Q49 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_Q49, expectedRows=expectedRows_Q49)
     hist_n_Q49 = historical_raw_data['Q49'].size
-    hist_currentInterest = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
+    # hist_currentInterest = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
+    hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
     hist_currentInterest.columns = ['Similar level classes', 'conf (similar)']
     
     hist_valcnt_47 = historical_raw_data['Q47'].value_counts()
     hist_valcnt_47 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_47, expectedRows=expectedRows_Q47)
     hist_n_Q47 = historical_raw_data['Q47'].size
-    hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
+    # hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
+    hist_declaredMajor = pd.DataFrame(np.array([(0, hist_n_Q47) for val in hist_valcnt_47]))
     hist_declaredMajor.columns = ['Similar level classes', 'conf (similar)']
  
     historical_futurePlans = utilities.futurePlansData(historical_raw_data)
@@ -394,7 +397,8 @@ if __name__ == "__main__":
         
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
-        course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n) for val in course_valcnt]))
+        # course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n) for val in course_valcnt]))
+        course_interestShift = pd.DataFrame(np.array([( 0, course_n) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
         df = hist_interestShift.join(course_interestShift)
@@ -418,7 +422,8 @@ if __name__ == "__main__":
         
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
-        course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
+        # course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
+        course_interestShift = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
         df = hist_currentInterest.join(course_interestShift)
@@ -442,7 +447,8 @@ if __name__ == "__main__":
 
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
-        course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
+        # course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
+        course_declaredMajor = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
         course_declaredMajor.columns = ['Your class', 'conf (your)']
 
         df = hist_declaredMajor.join(course_declaredMajor)
