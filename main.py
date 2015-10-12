@@ -405,7 +405,7 @@ if __name__ == "__main__":
         ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75
                     , yerr=errors)
         ax.set_ylim(0,1)
-        ax.set_xticklabels(['Decreased', 'Stayed the same', 'Increased'], rotation=45)
+        ax.set_xticklabels(['Increased', 'Stayed the same', 'Decreased'], rotation=45)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('During the semester, my interest in physics. . .\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         fig = ax.get_figure()
