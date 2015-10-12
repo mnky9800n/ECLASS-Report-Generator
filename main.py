@@ -96,7 +96,8 @@ def add_date(id):
 
 # TODO: create table 1 function
 
-def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, title, image_save_directory, save_title):
+# def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, title, image_save_directory, save_title):
+def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, title, image_save_directory, save_title, colors={'hist':'blue','course':'red'}):
     """
     Pipeline for plotting itemized survey question plots
 
@@ -117,7 +118,8 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
                      ,offset=0.2
                      ,fig=fig
                      ,ax=ax
-                     ,color='blue')
+                     #,color='blue')
+                     ,color=colors['hist'])
     
     fig, ax = utilities.plotItemizedData(preData=_course['pre']
                              ,postData=_course['post']
@@ -125,7 +127,9 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
                              ,offset=-0.2
                              ,fig=fig
                              ,ax=ax
-                             ,color='red')
+                             #,color='red')
+                             ,color=colors['course'])
+
     fig.savefig(image_save_directory+save_title, bbox_inches='tight')#'\\WhatDoYouThink1.png')
 
 if __name__ == "__main__":
@@ -307,7 +311,8 @@ if __name__ == "__main__":
                                        , title='What do YOU think? and \nWhat would experimental physicists say \nabout their research? (part 1)'
                                        , image_save_directory=image_save_directory
                                        , save_title='expertvsyou1.png'
-                                       , qlen=qlen)
+                                       , qlen=qlen
+                                       , colors={'course':'red','hist':'black'})
 
         # plot expertvsyou2.png
         itemized_survey_plotting_pipeline(hist_df=hist_df
@@ -316,7 +321,9 @@ if __name__ == "__main__":
                                        , title='What do YOU think? and \nWhat would experimental physicists say \nabout their research? (part 2)'
                                        , image_save_directory=image_save_directory
                                        , save_title='expertvsyou2.png'
-                                       , qlen=qlen)
+                                       , qlen=qlen
+                                       , colors={'course':'red','hist':'black'})
+
         
         # plot grades1.png
         qlen = len(q.post_GradeQuestionIDs)
