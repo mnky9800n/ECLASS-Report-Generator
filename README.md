@@ -14,4 +14,6 @@ Tested in Python 3.4.
 
 # How To Use
 
-This hasn't been written yet.
+Currently this application runs on the command line and be run by typing the following:
+
+`python main.py <location of pre-historical ECLASS data> <location of post-historical ECLASS data> <location of instructor survey data>`
