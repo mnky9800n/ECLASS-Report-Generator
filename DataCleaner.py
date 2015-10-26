@@ -42,8 +42,8 @@ def DeleteNotNeededColumns(df):
     from NotNeededColumns list
     """
 
-    #NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10']
-    NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10', 'q40a', 'q40b']
+    NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10']
+    #NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10', 'q40a', 'q40b']
     for col in NotNeededColumns:
         del df[col]
 

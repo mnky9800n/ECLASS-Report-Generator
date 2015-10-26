@@ -1,5 +1,4 @@
-﻿
-"""
+﻿"""
 [0] import Questions, UtilitiesForPlotting, DataCleaner, BuildReport
 
 [1] load historical data
@@ -43,6 +42,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import shutil
 import jinja2
+import timeit
 
 class NoCourseDataError(Exception):
     pass
@@ -56,7 +56,6 @@ def load_pre_post_data(pre, post):
     loads cleaned data and returns a pandas dataframe
     of the merged data.
     """
-    #print(pre)
     predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
     postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
 
@@ -96,7 +95,6 @@ def add_date(id):
 
 # TODO: create table 1 function
 
-# def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, title, image_save_directory, save_title):
 def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, title, image_save_directory, save_title, colors={'hist':'blue','course':'red'}):
     """
     Pipeline for plotting itemized survey question plots
@@ -137,6 +135,7 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
     fig.savefig(image_save_directory+"highquality_" + save_title, bbox_inches='tight')
 
 if __name__ == "__main__":
+    start = timeit.default_timer()
 
     DPI = 60
     q = Questions.Questions()
@@ -154,7 +153,6 @@ if __name__ == "__main__":
     course_raw_data = load_pre_post_data(pre='preMunged_Aggregate_Data.csv'
                                    ,post='postMunged_Aggregate_Data.csv')
 
-    # TODO: load faculty survey data
 
     # get all unique course ideas, append the current GMT year and month
     # to them
@@ -190,7 +188,6 @@ if __name__ == "__main__":
     hist_valcnt_Q50 = historical_raw_data['Q50'].value_counts()
     hist_n_Q50 = historical_raw_data['Q50'].size
     # hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
-    # hist_interestShift = pd.DataFrame(np.array([(0, hist_n_Q50) for val in hist_valcnt_Q50]))
     hist_interestShift = pd.DataFrame(np.array([(val/hist_n_Q50, 0) for val in hist_valcnt_Q50]))
     hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
 
@@ -198,7 +195,6 @@ if __name__ == "__main__":
     hist_valcnt_Q49 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_Q49, expectedRows=expectedRows_Q49)
     hist_n_Q49 = historical_raw_data['Q49'].size
     # hist_currentInterest = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
-    # hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
     hist_currentInterest = pd.DataFrame(np.array([(val/hist_n_Q49, 0) for val in hist_valcnt_Q49]))
     hist_currentInterest.columns = ['Similar level classes', 'conf (similar)']
     
@@ -206,8 +202,6 @@ if __name__ == "__main__":
     hist_valcnt_47 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_47, expectedRows=expectedRows_Q47)
     hist_n_Q47 = historical_raw_data['Q47'].size
     # hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
-    # hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
-    #hist_currentInterest = pd.DataFrame(np.array([(val/hist_n_Q49, 0) for val in hist_valcnt_Q49]))
     hist_declaredMajor = pd.DataFrame(np.array([(val/hist_n_Q47, 0) for val in hist_valcnt_47]))
     hist_declaredMajor.columns = ['Similar level classes', 'conf (similar)']
  
@@ -223,7 +217,6 @@ if __name__ == "__main__":
         individual_course_DF = course_raw_data[course_raw_data.courseID == course]
 
         # calculate n-values for course data
-     
         course_N = max(individual_course_DF.count())
         if course_N == 0:
             raise NoCourseDataError("There was no data for course '{CourseName}'.".format(CourseName=course))
@@ -427,6 +420,7 @@ if __name__ == "__main__":
         # TODO : WTF is individual_course_DF
         course_futurePlans = utilities.futurePlansData(individual_course_DF)
 
+        # this line should probably go into utilities.futurePlansData
         course_df = pd.DataFrame({'Your class':course_futurePlans[:,0]}
                                 , index=course_futurePlans[:,1]).astype('float64')
 
@@ -437,6 +431,8 @@ if __name__ == "__main__":
         ax.set_xlim(0,1)
         ax.set_xlabel('Fraction of Students')
         fig = ax.get_figure()
+
+        # TODO: function out the savefig function
         # save fig  with smaller dpi for faster loading on browsers
         fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight', dpi=DPI)
     
@@ -447,10 +443,7 @@ if __name__ == "__main__":
         course_valcnt = individual_course_DF['Q50'].value_counts()
         course_n = individual_course_DF['Q50'].size
         
-        # TODO : replace confidence interval calculator with (0,course_n)
-        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         # course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n) for val in course_valcnt]))
-        #course_interestShift = pd.DataFrame(np.array([( 0, course_n) for val in course_valcnt]))
         course_interestShift = pd.DataFrame(np.array([(val/course_n, 0) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
@@ -480,13 +473,8 @@ if __name__ == "__main__":
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q49)
         course_n = individual_course_DF['Q49'].size
         
-        # TODO : replace confidence interval calculator with (0,course_n)
-        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
-        #course_interestShift = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
-        # course_interestShift = pd.DataFrame(np.array([(val/course_valcnt.sum(), 0) for val in list(course_valcnt)]))
         course_interestShift.columns = ['Your class', 'conf (your)']
-        #course_interestShift['Your class'] = course_interestShift['Your class']/course_interestShift['Your class'].count()
 
         df = hist_currentInterest.join(course_interestShift)
 
@@ -514,11 +502,7 @@ if __name__ == "__main__":
         course_valcnt = utilities.ReplaceMissingRowsWithZeros(dataSeries=course_valcnt, expectedRows=expectedRows_Q47)
         course_n = individual_course_DF['Q47'].size
 
-        # TODO : replace confidence interval calculator with (0,course_n)
-        # TODO : replacel confidence intervaal calculator with (0, hist_n)
         # course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
-        #course_declaredMajor = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
-        #course_declaredMajor = pd.DataFrame(np.array([(course_n, 0) for val in course_valcnt]))
         course_declaredMajor = pd.DataFrame(np.array([(val/course_n,0) for val in course_valcnt]))
         course_declaredMajor.columns = ['Your class', 'conf (your)']
 
@@ -540,9 +524,7 @@ if __name__ == "__main__":
         fig.savefig(image_save_directory + 'declaredmajor.png',bbox_inches='tight', dpi=DPI)
     
         # save fig with larger dpi for publication quality 
-         fig.savefig(image_save_directory + 'highquality_declaredmajor.png',bbox_inches='tight')
-       
-        # TODO: create Report.html
+        fig.savefig(image_save_directory + 'highquality_declaredmajor.png',bbox_inches='tight')
 
         # copy the static pages into the course directory
         for item in ['howtoread.html', 'analysis.html', 'questionlist.html']:
@@ -552,9 +534,9 @@ if __name__ == "__main__":
         TemplateLoader = jinja2.FileSystemLoader(searchpath=os.getcwd())
         TemplateEnv = jinja2.Environment(loader=TemplateLoader)
         Template = TemplateEnv.get_template('template.html')
-        RenderedTemplate = Template.render({'title': 'school name'
+        RenderedTemplate = Template.render({'title': course_dir#'school name'
                         , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
-                        , 'email': "Bethany.Wilcox@colorado.edu"
+                        , 'email': "eclass@colorado.edu"
                         , 'table1': [['no'],['data']]
                         , 'questionlist': q.questionIDToQuestionText
                         , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
@@ -565,5 +547,8 @@ if __name__ == "__main__":
             report.close()
         
         # delete dataframe of course data
-        del course_df, futurePlans_df, gender_df, df, 
+        del course_df, futurePlans_df, gender_df, df
         plt.close('all')
+    
+    end = timeit.default_timer()
+    print("Total run time: ", end - start)
