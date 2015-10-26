@@ -130,10 +130,15 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
                              #,color='red')
                              ,color=colors['course'])
 
-    fig.savefig(image_save_directory+save_title, bbox_inches='tight')#'\\WhatDoYouThink1.png')
+    # save fig  with smaller dpi for faster loading on browsers
+    fig.savefig(image_save_directory+save_title, bbox_inches='tight', dpi=60)
+    
+    # save fig with larger dpi for publication quality
+    fig.savefig(image_save_directory+"highquality_" + save_title, bbox_inches='tight')
 
 if __name__ == "__main__":
 
+    DPI = 60
     q = Questions.Questions()
     expectedRows_Q49 = [1.,2.,3.,4.,5.,6.]
     questionAnswers = {1.0: 'Physics', 2.0: 'Chemistry', 3.0: 'Biochemistry', 4.0: 'Biology', 5.0: 'Engineering', 6.0: 'Engineering Physics', 7.0: 'Astronomy', 8.0: 'Astrophysics', 9.0: 'Geology/geophysics', 10.0: 'Math/Applied Math', 11.0: 'Computer Science', 12.0: 'Physiology', 13.0: 'Other Science', 14.0: 'Non-science Major', 15.0: 'Open option/Undeclared'}
@@ -185,26 +190,32 @@ if __name__ == "__main__":
     hist_valcnt_Q50 = historical_raw_data['Q50'].value_counts()
     hist_n_Q50 = historical_raw_data['Q50'].size
     # hist_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q50) for val in hist_valcnt_Q50]))
-    hist_interestShift = pd.DataFrame(np.array([(0, hist_n_Q50) for val in hist_valcnt_Q50]))
+    # hist_interestShift = pd.DataFrame(np.array([(0, hist_n_Q50) for val in hist_valcnt_Q50]))
+    hist_interestShift = pd.DataFrame(np.array([(val/hist_n_Q50, 0) for val in hist_valcnt_Q50]))
     hist_interestShift.columns = ['Similar level classes', 'conf (similar)']
 
     hist_valcnt_Q49 = historical_raw_data['Q49'].value_counts()
     hist_valcnt_Q49 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_Q49, expectedRows=expectedRows_Q49)
     hist_n_Q49 = historical_raw_data['Q49'].size
     # hist_currentInterest = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q49, n_LikertLevels=6) for val in hist_valcnt_Q49]))
-    hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
+    # hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
+    hist_currentInterest = pd.DataFrame(np.array([(val/hist_n_Q49, 0) for val in hist_valcnt_Q49]))
     hist_currentInterest.columns = ['Similar level classes', 'conf (similar)']
     
     hist_valcnt_47 = historical_raw_data['Q47'].value_counts()
     hist_valcnt_47 = utilities.ReplaceMissingRowsWithZeros(dataSeries=hist_valcnt_47, expectedRows=expectedRows_Q47)
     hist_n_Q47 = historical_raw_data['Q47'].size
     # hist_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), hist_n_Q47, n_LikertLevels=6) for val in hist_valcnt_47]))
-    hist_declaredMajor = pd.DataFrame(np.array([(0, hist_n_Q47) for val in hist_valcnt_47]))
+    # hist_currentInterest = pd.DataFrame(np.array([(0, hist_n_Q49) for val in hist_valcnt_Q49]))
+    #hist_currentInterest = pd.DataFrame(np.array([(val/hist_n_Q49, 0) for val in hist_valcnt_Q49]))
+    hist_declaredMajor = pd.DataFrame(np.array([(val/hist_n_Q47, 0) for val in hist_valcnt_47]))
     hist_declaredMajor.columns = ['Similar level classes', 'conf (similar)']
  
     historical_futurePlans = utilities.futurePlansData(historical_raw_data)
     history_futureplans_df = pd.DataFrame({'Similar level classes':historical_futurePlans[:,0]}
                                 , index=historical_futurePlans[:,1]).astype('float64')
+
+    print("Historical data loaded. . .")
 
     for course, ID_date in zip(courseIDs,courseIDs_Date):
 
@@ -244,12 +255,17 @@ if __name__ == "__main__":
             course_dir = parent_dir+ '\\' + ID_date
             print(course_dir)
             os.makedirs(course_dir, exist_ok=True)
+        else:
+            course_dir = parent_dir + '\\' + ID_date
+            print(course_dir)
 
         # create images directory
         course_img_dir = parent_dir+'\\' + ID_date + '\\Images'
         if not os.path.exists(course_img_dir):
             print(course_img_dir)
             os.makedirs(course_img_dir, exist_ok=True)
+        else:
+            print(course_img_dir + ' : Already exists.')
 
         image_save_directory = course_img_dir + '\\'
 
@@ -281,7 +297,13 @@ if __name__ == "__main__":
         ax.set_xticklabels(labels=['pre','post'], rotation=0)
         ax.set_ylabel('Fraction of statements\nwith expert-like responses')
         fig = ax.get_figure()
-        fig.savefig(image_save_directory+'overall.png', bbox_inches='tight')
+
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory+'overall.png', bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality
+        fig.savefig(image_save_directory+'highquality_overall.png', bbox_inches='tight')
+
         del agg_df, data, error, fig, ax
 
         # plot whatdoyouthink1.png
@@ -349,7 +371,13 @@ if __name__ == "__main__":
                        ,fig=fig
                        ,ax=ax
                        ,color='red')
-        fig.savefig(image_save_directory + 'grades1.png', bbox_inches='tight')
+
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'grades1.png', bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality        
+        fig.savefig(image_save_directory + 'highquality_grades1.png', bbox_inches='tight')
+        
 
         # plot grades2.png
         fig, ax = utilities.createFigureForItemizedSurveyData(questions=question_text_plot2, legendLabels=['Similiar level courses', 'Your course']
@@ -382,14 +410,21 @@ if __name__ == "__main__":
         ax = gender_df.plot(kind='bar', color=['blue', 'red']
                            , alpha=0.75)
 
+
+
         ax.set_title('What is your gender?')
         ax.set_ylim(0,1)
         ax.set_ylabel('Fraction of Students')
         ax.set_xticklabels(['Female', 'Male', 'Prefer not to say'], rotation=45)
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'gender.png',bbox_inches='tight')
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'gender.png',bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality  
+        fig.savefig(image_save_directory + 'highquality_gender.png',bbox_inches='tight')
 
         # plot futureplans.png
+        # TODO : WTF is individual_course_DF
         course_futurePlans = utilities.futurePlansData(individual_course_DF)
 
         course_df = pd.DataFrame({'Your class':course_futurePlans[:,0]}
@@ -402,7 +437,11 @@ if __name__ == "__main__":
         ax.set_xlim(0,1)
         ax.set_xlabel('Fraction of Students')
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight')
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality 
+        fig.savefig(image_save_directory + 'highquality_futureplans.png',bbox_inches='tight')
 
         # plot interestshift.png
         course_valcnt = individual_course_DF['Q50'].value_counts()
@@ -411,7 +450,8 @@ if __name__ == "__main__":
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
         # course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n) for val in course_valcnt]))
-        course_interestShift = pd.DataFrame(np.array([( 0, course_n) for val in course_valcnt]))
+        #course_interestShift = pd.DataFrame(np.array([( 0, course_n) for val in course_valcnt]))
+        course_interestShift = pd.DataFrame(np.array([(val/course_n, 0) for val in course_valcnt]))
         course_interestShift.columns = ['Your class', 'conf (your)']
 
         df = hist_interestShift.join(course_interestShift)
@@ -419,14 +459,21 @@ if __name__ == "__main__":
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
 
-        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75
-                    , yerr=errors)
+        #ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75, yerr=errors)
+        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75)
         ax.set_ylim(0,1)
         ax.set_xticklabels(['Increased', 'Stayed the same', 'Decreased'], rotation=45)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('During the semester, my interest in physics. . .\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'interestshift.png',bbox_inches='tight')
+
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'interestshift.png',bbox_inches='tight',dpi=DPI)
+    
+        # save fig with larger dpi for publication quality 
+        fig.savefig(image_save_directory + 'highquality_interestshift.png',bbox_inches='tight')
+
+
 
         # plot currentinterest.png
         course_valcnt = individual_course_DF['Q49'].value_counts()
@@ -435,23 +482,32 @@ if __name__ == "__main__":
         
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
-        # course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
-        course_interestShift = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
+        course_interestShift = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
+        #course_interestShift = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
+        # course_interestShift = pd.DataFrame(np.array([(val/course_valcnt.sum(), 0) for val in list(course_valcnt)]))
         course_interestShift.columns = ['Your class', 'conf (your)']
+        #course_interestShift['Your class'] = course_interestShift['Your class']/course_interestShift['Your class'].count()
 
         df = hist_currentInterest.join(course_interestShift)
 
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
 
-        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75
-                    , yerr=errors)
+        # ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75, yerr=errors)
+        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75)
         ax.set_ylim(0,1)
         ax.set_xticklabels(['Very Low', 'Low', 'Moderate', 'High', 'Very High', 'N/A'], rotation=45)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('Currrently, what is your interest in physics?\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'currentinterest.png',bbox_inches='tight')
+
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'currentinterest.png',bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality 
+        fig.savefig(image_save_directory + 'highquality_currentinterest.png',bbox_inches='tight')
+
+
 
         # plot declaredmajor.png
         course_valcnt = individual_course_DF['Q47'].value_counts()
@@ -461,7 +517,9 @@ if __name__ == "__main__":
         # TODO : replace confidence interval calculator with (0,course_n)
         # TODO : replacel confidence intervaal calculator with (0, hist_n)
         # course_declaredMajor = pd.DataFrame(np.array([utilities.confidenceInterval(int(val), course_n, n_LikertLevels=6) for val in course_valcnt]))
-        course_declaredMajor = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
+        #course_declaredMajor = pd.DataFrame(np.array([(0, course_n) for val in course_valcnt]))
+        #course_declaredMajor = pd.DataFrame(np.array([(course_n, 0) for val in course_valcnt]))
+        course_declaredMajor = pd.DataFrame(np.array([(val/course_n,0) for val in course_valcnt]))
         course_declaredMajor.columns = ['Your class', 'conf (your)']
 
         df = hist_declaredMajor.join(course_declaredMajor)
@@ -469,15 +527,21 @@ if __name__ == "__main__":
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
 
-        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class']
-                     , color=['blue', 'red'], alpha=0.75, yerr=errors)
+        #ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75, yerr=errors)
+        ax = df.plot(kind='bar', y=['Similar level classes', 'Your class'], color=['blue', 'red'], alpha=0.75)
+
         ax.set_ylim(0,1)
         ax.set_xticklabels([qstr for qstr in questionAnswers.values()], rotation=90)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('What is your current major?\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         fig = ax.get_figure()
-        fig.savefig(image_save_directory + 'declaredmajor.png',bbox_inches='tight')
-        
+
+        # save fig  with smaller dpi for faster loading on browsers
+        fig.savefig(image_save_directory + 'declaredmajor.png',bbox_inches='tight', dpi=DPI)
+    
+        # save fig with larger dpi for publication quality 
+         fig.savefig(image_save_directory + 'highquality_declaredmajor.png',bbox_inches='tight')
+       
         # TODO: create Report.html
 
         # copy the static pages into the course directory
