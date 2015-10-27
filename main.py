@@ -1,36 +1,4 @@
-﻿"""
-[0] import Questions, UtilitiesForPlotting, DataCleaner, BuildReport
-
-[1] load historical data
-
-[2] load course data
-
-[3] load faculty survey data
-
-[4] use DataCleaner on course data
-
-[5] create directories based on course IDs from course data
-
-[6] for course in data:
-
-        plot overall.png
-        plot wdyt1.png
-        plot wdyt2.png
-        plot wdytvswdet1.png
-        plot wdytvswdet2.png
-        plot grade1.png
-        plot grade2.png
-        plot declaredmajor.png
-        plot currentinterest.png
-        plot gender.png
-        plot futureplans.png
-
-        create Table1
-
-        use BuildReport to generate report
-"""
-
-import Questions
+﻿import Questions
 import UtilitiesForPlotting as utilities
 import DataCleaner
 import BuildReport
@@ -109,7 +77,7 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
     _course = utilities.sliceDataForItemizedPlot(df=course_df, questionListForSlicing=_questions)
     fig, ax = utilities.createFigureForItemizedSurveyData(questions=_questiontext, legendLabels=['Similiar level courses', 'Your course']
                                        ,title=title)
-    
+
     fig, ax = utilities.plotItemizedData(preData=_hist['pre']
                      ,postData=_hist['post']
                      ,confData=_hist['conf']
@@ -135,7 +103,11 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
     fig.savefig(image_save_directory+"highquality_" + save_title, bbox_inches='tight')
 
 if __name__ == "__main__":
-    start = timeit.default_timer()
+
+    timing = True
+
+    if timing == True:
+        start = timeit.default_timer()
 
     DPI = 60
     q = Questions.Questions()
@@ -212,6 +184,10 @@ if __name__ == "__main__":
     print("Historical data loaded. . .")
 
     for course, ID_date in zip(courseIDs,courseIDs_Date):
+        
+        if timing == True:
+            one_report_start = timeit.default_timer()
+
 
         # create dataframe of course data
         individual_course_DF = course_raw_data[course_raw_data.courseID == course]
@@ -518,6 +494,7 @@ if __name__ == "__main__":
         ax.set_xticklabels([qstr for qstr in questionAnswers.values()], rotation=90)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('What is your current major?\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
+        
         fig = ax.get_figure()
 
         # save fig  with smaller dpi for faster loading on browsers
@@ -527,28 +504,49 @@ if __name__ == "__main__":
         fig.savefig(image_save_directory + 'highquality_declaredmajor.png',bbox_inches='tight')
 
         # copy the static pages into the course directory
-        for item in ['howtoread.html', 'analysis.html', 'questionlist.html']:
-            shutil.copy2(item, course_dir)
+        #for item in ['howtoread.html', 'analysis.html', 'questionlist.html']:
+        #    shutil.copy2(item, course_dir)
 
         # generate the report.html
-        TemplateLoader = jinja2.FileSystemLoader(searchpath=os.getcwd())
+        print(os.getcwd())
+        TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator")
         TemplateEnv = jinja2.Environment(loader=TemplateLoader)
         Template = TemplateEnv.get_template('template.html')
-        RenderedTemplate = Template.render({'title': course_dir#'school name'
-                        , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
-                        , 'email': "eclass@colorado.edu"
-                        , 'table1': [['no'],['data']]
-                        , 'questionlist': q.questionIDToQuestionText
-                        , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
-                                          ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
-                        , 'page': 'report'})
-        with open(course_dir + '//report.html', 'wb+') as report:
-            report.write(RenderedTemplate.encode())
-            report.close()
+
+        #for page in ['report.html', 'howtoread.html', 'analysis.html', 'questionlist.html']:
+        for page in ['report', 'howtoread', 'analysis', 'questionlist']:
+
+            RenderedTemplate = Template.render({'title': course_dir#'school name'
+                            , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
+                            , 'email': "eclass@colorado.edu"
+                            , 'table1': [['no'],['data']]
+                            , 'questionlist': q.questionList()
+                            , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
+                                              ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
+                            , 'page': page})
+            with open(course_dir + '//' + page + '.html', 'wb+') as report:
+                report.write(RenderedTemplate.encode())
+                report.close()
+
+        #RenderedTemplate = Template.render({'title': course_dir#'school name'
+        #                , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
+        #                , 'email': "eclass@colorado.edu"
+        #                , 'table1': [['no'],['data']]
+        #                , 'questionlist': q.questionIDToQuestionText
+        #                , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
+        #                                  ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
+        #                , 'page': 'report'})
+        #with open(course_dir + '//report.html', 'wb+') as report:
+        #    report.write(RenderedTemplate.encode())
+        #    report.close()
         
         # delete dataframe of course data
         del course_df, futurePlans_df, gender_df, df
         plt.close('all')
+
+        if timing == True:
+            one_report_end = timeit.default_timer()
+            print('Single report runtime: ', one_report_end - one_report_start)
     
     end = timeit.default_timer()
     print("Total run time: ", end - start)

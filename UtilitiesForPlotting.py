@@ -286,8 +286,8 @@ def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=Fal
 
     return data_df
 
-def sliceDataForItemizedPlot(df, questionListForSlicing):   
-    
+def sliceDataForItemizedPlot(df, questionListForSlicing):
+
     pre = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (pre)']
     post = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (post)']
     conf = df.ix[questionListForSlicing]['Confidence Interval (pre)']
@@ -312,7 +312,7 @@ def createFigureForItemizedSurveyData(questions, legendLabels, title):
     ax.plot([],[],color='red', linewidth=12.5)
 
     # ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=2)
-    ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -numberOfQuestions/100.0), fancybox=True, shadow=True, ncol=2)
+    ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -numberOfQuestions/200.0), fancybox=True, shadow=True, ncol=2)
 
 
     ax.grid(b=True, which='major', color='k'
@@ -338,8 +338,10 @@ def createFigureForItemizedSurveyData(questions, legendLabels, title):
 
 def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
     y_base = [y+1 for y in range(len(preData))]
+    
     for xpre, xpost, xconf, y in zip(preData, postData, confData, y_base):
-        
+    #for xpre, xpost, xconf, y in sorted(zip(preData, postData, confData, y_base)):
+
         #plot confidence interval
         ax.plot([xpre-xconf, xpre+xconf], [y+offset, y+offset], color=color, linewidth=12.5, alpha=0.2)
         

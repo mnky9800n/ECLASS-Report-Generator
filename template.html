@@ -10,7 +10,8 @@
 
     <meta name="Author" content="John Mark Aiken" />
 
-    <link href="http://acrossthebelly.com/ECLASS/Content/bootstrap.min.css" rel="stylesheet" />
+    <!--<link href="http://acrossthebelly.com/ECLASS/Content/bootstrap.min.css" rel="stylesheet" />-->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -19,15 +20,17 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only">Toggle navigation</span>s
                     {% for link in navbar[0] %}
                         <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</span>
                     {% endfor %}
                 </button>
-                <a class="navbar-brand" href="report.htm">E-CLASS</a>
+                <a class="navbar-brand" href="report.html">E-CLASS</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <nav class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+
                 <ul class="nav navbar-nav">
                     {% for link in navbar %}
                     <li class="active"><a href="{{ link[1] }}">{{ link[0] }}</a></li>
@@ -56,7 +59,7 @@
             <ul>
                 <li><a href="http://tinyurl.com/E-CLASS-Feedback">Complete a Six Question Survey</a></li>
                 <!--li>Email your questions or thoughts directly to our research team at: <a href={{email}}></a></li-->
-                <li>Email your questions or thoughts directly to our research team at: <a href={{email}}></a>{{email}}</li>
+                <li>Email your questions or thoughts directly to our research team at: <a href="mailto:{{email}}"></a>{{email}}</li>
             </ul>
 
             <p>
@@ -591,8 +594,10 @@
     </header>
 
     {% endif %}
-
-    <script src="http://acrossthebelly.com/ECLASS/Scripts/jquery-2.1.4.min.js"></script>
-    <script src="http://acrossthebelly.com/ECLASS/Scripts/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!--<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+    <!--<script src="http://acrossthebelly.com/ECLASS/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="http://acrossthebelly.com/ECLASS/Scripts/bootstrap.min.js"></script>-->
 </body>
 </html>
