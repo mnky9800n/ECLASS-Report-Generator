@@ -195,7 +195,8 @@ if __name__ == "__main__":
         # calculate n-values for course data
         course_N = max(individual_course_DF.count())
         if course_N == 0:
-            raise NoCourseDataError("There was no data for course '{CourseName}'.".format(CourseName=course))
+            #raise NoCourseDataError("There was no data for course '{CourseName}'.".format(CourseName=course))
+            print("There was no data for course '{CourseName}'.\nMoving to next course data. . .".format(CourseName=course))
             break
 
         # create expert like response data frame : pre course data
@@ -520,6 +521,7 @@ if __name__ == "__main__":
                             , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
                             , 'email': "eclass@colorado.edu"
                             , 'table1': [['no'],['data']]
+                            , 'low_N' : True if course_N < 10 else False
                             , 'questionlist': q.questionList()
                             , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
                                               ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
@@ -528,18 +530,7 @@ if __name__ == "__main__":
                 report.write(RenderedTemplate.encode())
                 report.close()
 
-        #RenderedTemplate = Template.render({'title': course_dir#'school name'
-        #                , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
-        #                , 'email': "eclass@colorado.edu"
-        #                , 'table1': [['no'],['data']]
-        #                , 'questionlist': q.questionIDToQuestionText
-        #                , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
-        #                                  ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
-        #                , 'page': 'report'})
-        #with open(course_dir + '//report.html', 'wb+') as report:
-        #    report.write(RenderedTemplate.encode())
-        #    report.close()
-        
+
         # delete dataframe of course data
         del course_df, futurePlans_df, gender_df, df
         plt.close('all')

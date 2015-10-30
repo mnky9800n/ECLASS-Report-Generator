@@ -45,9 +45,20 @@
     <main class="container">
   
         <header class="container">
+            {% if low_N == True %}
+            <h1>
+                Low N-value Data
+            </h1>
+            <p style="padding: 50px; border: red 5px ridge">
+                The number of matched responses is low (particularly N < 10) either due to small class size or poor response rates, we caution against overgeneralizing the E-CLASS results. In cases of low N, these results can provide valuable insight into that specific group of students' ideas about experimental physics; however, these results may not generalized to the overall student body of physics students.
+            </p>
+
+            {% endif %}
+
             <h1>
                 Colorado Learning Attitudes about Science Survey for Experimental Physics (E-CLASS)
             </h1>
+
             <p>
                 Thank you for participating in the Colorado Learning Attitudes about Science Survey for
                 Experimental Physics (E-CLASS). We hope you find this report helpful for learning more

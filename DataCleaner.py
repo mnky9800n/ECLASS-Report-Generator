@@ -141,6 +141,7 @@ def cleanDataPipeline(dir):
     #name can be 'pre' or 'post'
     name = ['pre', 'post']
     for n in name:
+        #pre_filenames = glob.glob('*'+n+'.csv')
         pre_filenames = glob.glob('*'+n+'.csv')
 
         raw_df = BuildAggregateDataFrame(pre_filenames, coursetype='LowerDivision', name=n)
@@ -148,7 +149,6 @@ def cleanDataPipeline(dir):
 
         #delete responses that didn't answer the checker question
         DeleteResponsesToDiscardQuestion(raw_df) 
-        #print(pre_df.head())
 
         #Delete Not Needed Columns
         DeleteNotNeededColumns(raw_df)
@@ -158,11 +158,9 @@ def cleanDataPipeline(dir):
 
         #shift negative asked questions to positive to align 
         ShiftNegativeQuestions(raw_df)
-        #print(pre_df['q02a'].head())
 
         #Remove Rows with Null first names, last names, studentIDs
         DeleteNANIdentifiers(raw_df)
-        #print(pre_df.head())
 
         #Delete empty responses
         DeleteEmptyResponses(raw_df)
