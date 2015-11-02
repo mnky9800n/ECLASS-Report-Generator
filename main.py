@@ -1,7 +1,7 @@
 ﻿import Questions
 import UtilitiesForPlotting as utilities
 import DataCleaner
-import BuildReport
+#import BuildReport
 import os
 import pandas as pd
 import sys
@@ -71,10 +71,27 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
     ---------------------
     hist_data : pandas DataFrame
     """
+    #print(hist_df)
+    #hist_df = hist_df.sort(columns='Fraction of Students with Expert Like Response (pre)')
+    #course_df.sort(inplace=True)
+    #print(hist_df.sort(columns='Fraction of Students with Expert Like Response (pre)'))
     _questions = [question[:-2] for question in question_block]
+
+    #hist_df = hist_df.sort(columns='Fraction of Students with Expert Like Response (pre)').copy()
+
+    #print(hist_df.ix[_questions])
+
+
+    #both_data = hist_df.join(course_df, lsuffix='hist', rsuffix='course')
+    #both_data.sort()
+    #print(both_data)
+
+
     _questiontext = [q.questionIDToQuestionText[key] for key in _questions]
     _hist = utilities.sliceDataForItemizedPlot(df=hist_df, questionListForSlicing=_questions)
     _course = utilities.sliceDataForItemizedPlot(df=course_df, questionListForSlicing=_questions)
+
+
     fig, ax = utilities.createFigureForItemizedSurveyData(questions=_questiontext, legendLabels=['Similiar level courses', 'Your course']
                                        ,title=title)
 
@@ -93,7 +110,6 @@ def itemized_survey_plotting_pipeline(hist_df, course_df, question_block, qlen, 
                              ,offset=-0.2
                              ,fig=fig
                              ,ax=ax
-                             #,color='red')
                              ,color=colors['course'])
 
     # save fig  with smaller dpi for faster loading on browsers
@@ -152,6 +168,8 @@ if __name__ == "__main__":
     df = pre_hist.join(post_hist, lsuffix=' (pre)', rsuffix=' (post)')
     grades_hist.columns = ['Confidence Interval (post)', 'Fraction of Students with Expert Like Response (post)']
     hist_df = pd.concat([df, grades_hist])
+    hist_df.sort(columns='Fraction of Students with Expert Like Response (post)', inplace=True)
+    #print(hist_df)
 
     # historical data calculations
     historical_N = max(historical_raw_data.count())
@@ -246,6 +264,8 @@ if __name__ == "__main__":
 
 
         # plot overall.png
+
+
         agg_df = hist_df.join(course_df, lsuffix=' [1]', rsuffix=' [2]')
         agg_df = agg_df.ix[[question[:-2] for question in q.pre_WhatDoYouThinkQuestionIDs]]
         agg_df = agg_df.mean()

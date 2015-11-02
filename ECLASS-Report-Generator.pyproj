@@ -29,6 +29,9 @@
   <ItemGroup>
     <Compile Include="BuildReport.py" />
     <Compile Include="DataCleaner.py" />
+    <Compile Include="eclass_item_plot.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>

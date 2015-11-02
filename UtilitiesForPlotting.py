@@ -288,10 +288,16 @@ def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=Fal
 
 def sliceDataForItemizedPlot(df, questionListForSlicing):
 
+    #df = df.sort(columns='Fraction of Students with Expert Like Response (pre)', ascending=False)
+    #print(df)
+
     pre = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (pre)']
     post = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (post)']
     conf = df.ix[questionListForSlicing]['Confidence Interval (pre)']
     
+    #print(pre.order())
+    #print(sorted(pre))
+
     return {'pre':pre, 'post':post, 'conf':conf}
 
 
@@ -338,7 +344,7 @@ def createFigureForItemizedSurveyData(questions, legendLabels, title):
 
 def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
     y_base = [y+1 for y in range(len(preData))]
-    
+    y_labels = []
     for xpre, xpost, xconf, y in zip(preData, postData, confData, y_base):
     #for xpre, xpost, xconf, y in sorted(zip(preData, postData, confData, y_base)):
 
@@ -360,6 +366,10 @@ def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
         elif xpost == xpre:
             pass
         
+        #questions
+        #y_labels = [makeNewLine(q) for q in questions]
+        #ax.set_yticklabels(y_labels, fontsize=14)
+
     return fig, ax
 
 
@@ -431,3 +441,38 @@ def futurePlansData(df):
             
     return np.array([r for r in zip(fractionData, _questions)])
 
+def plot_overall(hist_df, course_df):
+    """
+    plots aggregate scores on eclass questions
+    """
+    agg_df = hist_df.join(course_df, lsuffix=' [1]', rsuffix=' [2]')
+    agg_df = agg_df.ix[[question[:-2] for question in q.pre_WhatDoYouThinkQuestionIDs]]
+    agg_df = agg_df.mean()
+
+    data = np.array([[agg_df[2], agg_df[6]]
+                    ,[agg_df[3], agg_df[7]]])
+    error = np.array([[agg_df[0], agg_df[1]]
+                        , [agg_df[4], agg_df[5]]])
+
+    data = pd.DataFrame(data)
+    data.index = ['pre', 'post']
+    data.columns = ['Similar level courses', 'Your course']
+    ax = data.plot(kind='bar', yerr=error, color=['blue', 'red'], alpha=0.75)
+    ax.set_ylim(0,1)
+    ax.legend(loc='lower left')
+    ax.set_title('Overall E-CLASS Score on\n"What do YOU think..." statements\nN(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
+    ax.set_ylim(0,1)
+    ax.legend(loc='lower left')
+    ax.set_xticklabels(labels=['pre','post'], rotation=0)
+    ax.set_ylabel('Fraction of statements\nwith expert-like responses')
+    return ax.get_figure()
+
+def load_pre_post_data(pre, post):
+    """
+    loads cleaned data and returns a pandas dataframe
+    of the merged data.
+    """
+    predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
+    postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
+
+    return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
