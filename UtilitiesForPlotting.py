@@ -204,7 +204,7 @@ def confidenceInterval(n_respondents, n_total, n_LikertLevels=3, significanceLev
     else:
         return ResponsePercent, ConfidenceInterval
 
-def makeNewLine(s):
+def makeNewLine(s):#, newlines=2):
     """
     Description:
     -------------------
@@ -225,7 +225,6 @@ def makeNewLine(s):
     -------------------
     s : string
     string with newline added"""
-    
     _middleSpaceIndex = s[0:int(len(s)/2)].rfind(' ')
     
     if _middleSpaceIndex == -1:
@@ -285,107 +284,6 @@ def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=Fal
                       , index=[d for d in _data[:,0]])
 
     return data_df
-
-def sliceDataForItemizedPlot(df, questionListForSlicing):
-
-    #df = df.sort(columns='Fraction of Students with Expert Like Response (pre)', ascending=False)
-    #print(df)
-
-    pre = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (pre)']
-    post = df.ix[questionListForSlicing]['Fraction of Students with Expert Like Response (post)']
-    conf = df.ix[questionListForSlicing]['Confidence Interval (pre)']
-    
-    #print(pre.order())
-    #print(sorted(pre))
-
-    return {'pre':pre, 'post':post, 'conf':conf}
-
-
-# In[8]:
-
-def createFigureForItemizedSurveyData(questions, legendLabels, title):
-    
-    numberOfQuestions = len(questions)
-    
-    fig = plt.figure(figsize=(5,numberOfQuestions))
-    ax = plt.axes()
-    
-    # create legend box
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0 + box.height * 0.1, box.width, box.height * 0.9])
-
-    ax.plot([],[],color='blue', linewidth=12.5)
-    ax.plot([],[],color='red', linewidth=12.5)
-
-    # ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=2)
-    ax.legend(legendLabels, loc='upper center', bbox_to_anchor=(0.5, -numberOfQuestions/200.0), fancybox=True, shadow=True, ncol=2)
-
-
-    ax.grid(b=True, which='major', color='k'
-             , alpha=0.25, linestyle='--'
-            , linewidth=2)
-    
-    ax.set_ylim(0.5,numberOfQuestions+0.5)
-    ax.set_xlim(0,1)
-
-    # set question labels
-    ax.set_yticks([y+1 for y in range(0,numberOfQuestions)])
-    #questions
-    y_labels = [makeNewLine(q) for q in questions]
-    ax.set_yticklabels(y_labels, fontsize=14)
-
-    ax.set_title(title, fontsize=18)
-    ax.set_xlabel('Fraction of Class with Expert-like Response', fontsize=18)
-
-    return fig, ax
-
-
-# In[9]:
-
-def plotItemizedData(preData, postData, confData, offset, fig, ax, color):
-    y_base = [y+1 for y in range(len(preData))]
-    y_labels = []
-    for xpre, xpost, xconf, y in zip(preData, postData, confData, y_base):
-    #for xpre, xpost, xconf, y in sorted(zip(preData, postData, confData, y_base)):
-
-        #plot confidence interval
-        ax.plot([xpre-xconf, xpre+xconf], [y+offset, y+offset], color=color, linewidth=12.5, alpha=0.2)
-        
-        #plot different lines
-        ax.plot([xpre, xpost], [y+offset, y+offset], color='black', linewidth=2.5)
-        
-        #plot pre marker
-        ax.plot(xpre, y+offset, marker='o', color=color, markersize=15, mew=1)
-        
-        #plot post marker
-        if xpost < xpre:
-            ax.plot(xpost, y+offset, marker='<', color='red', markersize=15, mew=1)
-        elif xpost > xpre:
-            # ax.plot(xpost, y+offset, marker='>', color='green', markersize=15, mew=1)
-            ax.plot(xpost, y+offset, marker='>', color='red', markersize=15, mew=1)
-        elif xpost == xpre:
-            pass
-        
-        #questions
-        #y_labels = [makeNewLine(q) for q in questions]
-        #ax.set_yticklabels(y_labels, fontsize=14)
-
-    return fig, ax
-
-
-def plotGradeData(data, confData, offset, fig, ax, color):
-    y_base = [y+1 for y in range(len(data))]
-    #for x, xconf, y in zip(data, confData, y_base):
-    for x, xconf, y in sorted(zip(data, confData, y_base)):
-        
-        #plot confidence interval
-        ax.plot([x-xconf, x+xconf], [y+offset, y+offset], color=color, linewidth=12.5, alpha=0.2)
-                
-        #plot pre marker
-        ax.plot(x, y+offset, marker='o', color=color, markersize=15, mew=1)
-        
-        
-    return fig, ax
 
 def futurePlansData(df):
     

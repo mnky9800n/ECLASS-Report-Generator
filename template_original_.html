@@ -22,7 +22,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>s
                     {% for link in navbar[0] %}
-                        <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</span>
+                    <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</span>
                     {% endfor %}
                 </button>
                 <a class="navbar-brand" href="report.html">E-CLASS</a>
@@ -43,7 +43,7 @@
     <!-- Report document -->
     {% if page == 'report' %}
     <main class="container">
-  
+
         <header class="container">
             {% if low_N == True %}
             <h1>
@@ -87,10 +87,10 @@
                 <figure class="col-md-6">
                     <table class="table table-striped table-bordered">
                         {% for row in table1 %}
-                            <tr>
-                                <td>{{ row[0] }} </td>
-                                <td align="right"> {{ row[1] }}</td>
-                            </tr>
+                        <tr>
+                            <td>{{ row[0] }} </td>
+                            <td align="right"> {{ row[1] }}</td>
+                        </tr>
                         {% endfor %}
 
                     </table>
@@ -118,8 +118,7 @@
             </h2>
             <div class="row">
                 <figure class="col-md-6">
-                    <!--<img class="img-responsive" src="images/whatdoyouthink1.png" />-->
-                    <img class="img-responsive" src="images/whatdoYOUThink.png" height="100%" />
+                    <img class="img-responsive" src="images/whatdoyouthink1.png" />
                     <figcaption>
                         FIG. 6. Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
                         for your class (Red) and all students in similar level classes (i.e., calculus-based introductory-level) (Blue).
@@ -129,17 +128,6 @@
                     </figcaption>
                 </figure>
                 <figure class="col-md-6">
-                    <img class="img-responsive" src="images/whatdoExpertsThink.png" height="100%" />
-                    <figcaption>
-                        FIG. 11. Comparison for your class between changes in students' personal views versus their views about professional
-                        physicists. What do YOU think... (Red) shows the change in students' response to "What do YOU think when doing
-                        experiments for class?" This red data is the same as the red data in Figs. 6 and 7. "What would experimental
-                        physicists say..." (Green) shows the change in students response to "What would experimental physicists say about
-                        their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
-                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
-                    </figcaption>
-                </figure>
-                <!--<figure class="col-md-6">
                     <img class="img-responsive" src="images/whatdoyouthink2.png" />
                     <figcaption>
                         FIG. 7. Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
@@ -148,7 +136,7 @@
                         to post changes. The shaded bars indicate a 95% confidence interval. The responses are ordered by the
                         expert-like fraction in the pre-survey.
                     </figcaption>
-                </figure>-->
+                </figure>
             </div>
         </section>
 
@@ -158,25 +146,25 @@
             </h2>
             <div class="row">
                 <figure class="col-md-6">
-                    <img class="img-responsive" src="images/grades.png" height="100%" />
+                    <img class="img-responsive" src="images/grades1.png" />
                     <figcaption>
                         FIG. 8. An ordered plot of students' views of importance of different activities for earning a good grade in your class
                         and in similar level classes, which refers to the set of students in other calculus-based introductory-level classes.
                         Figures 8 and 9 should be viewed together.
                     </figcaption>
                 </figure>
-                <!--<figure class="col-md-6">
+                <figure class="col-md-6">
                     <img class="img-responsive" src="images/grades2.png" />
                     <figcaption>
                         FIG. 9. An ordered plot of students' views of importance of different activities for earning a good grade in your class
                         and in similar level classes, which refers to the set of students in other calculus-based introductory-level classes.
                         Figures 8 and 9 should be viewed together.
                     </figcaption>
-                </figure>-->
+                </figure>
             </div>
         </section>
 
-        <!--<section class="container">
+        <section class="container">
             <h2>
                 Differences between "What do YOU think?" and "What would experimental physicists say...?"
             </h2>
@@ -204,7 +192,7 @@
                     </figcaption>
                 </figure>
             </div>
-        </section>-->
+        </section>
 
         <section class="container">
             <h2>
@@ -381,13 +369,13 @@
             </h1>
             <p>In order for a student’s response to be considered valid and included in the analysis (e.g Table 1), it needs to pass several basic filters:</p>
 
-                <ol>
-                    <li>The student must complete the survey (i.e., click through all the way to the end)</li>
-                    <li>The student must select a response for at least one question</li>
-                    <li>The student must respond correctly (i.e., ‘agree’ not ‘strongly agree’) to the filtering question used to eliminate responses from students who are not reading the questions.</li>
-                    <li>Only the first complete response for each student is included (i.e., duplicate responses from a single student are removed)</li>
-                </ol>
-            
+            <ol>
+                <li>The student must complete the survey (i.e., click through all the way to the end)</li>
+                <li>The student must select a response for at least one question</li>
+                <li>The student must respond correctly (i.e., ‘agree’ not ‘strongly agree’) to the filtering question used to eliminate responses from students who are not reading the questions.</li>
+                <li>Only the first complete response for each student is included (i.e., duplicate responses from a single student are removed)</li>
+            </ol>
+
         </header>
 
         <header class="container">
@@ -566,15 +554,15 @@
         <h1>
             Question List
         </h1>
-        
+
         <div class="table-responsive visible-lg visible-md">
             <table class="table">
                 {% for q in questionlist %}
-                    <tr>
-                        <td>{{ q[0] }}</td>
-                        <td>{{ q[1] }}</td>
-                        <td>{{ q[2] }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ q[0] }}</td>
+                    <td>{{ q[1] }}</td>
+                    <td>{{ q[2] }}</td>
+                </tr>
 
                 {% endfor %}
 
@@ -586,10 +574,10 @@
         <div class="visible-sm visible-xs">
             <table class="table-responsive col-sm-12">
                 {% for q in questionlist %}
-                    <tr>
-                        <td>{{ q[0] }}</td>
-                        <td>{{ q[1] }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ q[0] }}</td>
+                    <td>{{ q[1] }}</td>
+                </tr>
                 {% endfor %}
 
             </table>
@@ -604,10 +592,9 @@
 
             </table>
         </div>
-    
-   
-    </header> <!--<!-- /.container -->
 
+
+    </header> <!--<!-- /.container -->
     {% else %}
     <header class="container">
         <h1>YA DUN GOOFED!</h1>

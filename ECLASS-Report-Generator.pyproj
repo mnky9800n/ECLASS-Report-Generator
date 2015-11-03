@@ -24,6 +24,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="index.html" />
+    <Content Include="template_original_.html" />
     <Content Include="template.html" />
   </ItemGroup>
   <ItemGroup>

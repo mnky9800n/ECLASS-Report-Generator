@@ -9,7 +9,7 @@ Questions = Questions()
 
 def make_itemized_single_figure(title):
 
-    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(10,17))
+    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(8,17))
 
     fig.suptitle(title, y=0.92, fontsize=20)
 
@@ -55,8 +55,9 @@ def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
     for n,q in enumerate(qids):
         y = n+offset 
         
-        question_text = UtilitiesForPlotting.makeNewLine(Questions.questionIDToQuestionText[q])
-        
+        #question_text = UtilitiesForPlotting.makeNewLine(Questions.questionIDToQuestionText[q])
+        question_text = Questions.questionIDToQuestionText[q]
+        question_text = UtilitiesForPlotting.makeNewLine(question_text[:int(len(question_text)/2)]) + UtilitiesForPlotting.makeNewLine(question_text[int(len(question_text)/2):])
         #if n < n_questions/2:
         if n < int(n_questions/2):
             ax=ax1
@@ -102,8 +103,8 @@ def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
     ax1.set_yticks(range(0, int(n_questions/2)))
     ax2.set_yticks(range(int(n_questions/2+1)-1, n_questions))
 
-    ax1.set_yticklabels(ax1_ytick_labels, fontsize=15)
-    ax2.set_yticklabels(ax2_ytick_labels, fontsize=15)
+    ax1.set_yticklabels(ax1_ytick_labels, fontsize=12)
+    ax2.set_yticklabels(ax2_ytick_labels, fontsize=12)
 
     ax1.set_xlabel('Fraction of class with expert-like response', x=1.1, fontsize=20)
 
