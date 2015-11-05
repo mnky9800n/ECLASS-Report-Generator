@@ -11,13 +11,6 @@ import Questions
 
 q = Questions.Questions()
 
-#questionIDs = ['q01a','q01b','q02a','q02b','q03a','q03b','q04a','q04b','q05a','q05b','q06a','q06b','q07a','q07b'
-#               ,'q09a','q09b','q10a','q10b','q11a','q11b','q12a','q12b','q13a','q13b','q14a','q14b','q15a','q15b'
-#               ,'q16a','q16b','q17a','q17b','q18a','q18b','q19a','q19b','q20a','q20b','q21a','q21b','q22a','q22b'
-#               ,'q23a','q23b','q24a','q24b','q25a','q25b','q26a','q26b','q27a','q27b','q28a','q28b','q29a','q29b'
-#               ,'q30a','q30b','q31a','q31b','q40a','q40b']
-
-
 def BuildAggregateDataFrame(filenames, coursetype, name):
     """
     combines all data from csv's in a filename list
@@ -43,7 +36,6 @@ def DeleteNotNeededColumns(df):
     """
 
     NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10']
-    #NotNeededColumns = ['V2','V3','V4','V5','V6','V7','V8','V9','V10', 'q40a', 'q40b']
     for col in NotNeededColumns:
         del df[col]
 
@@ -51,28 +43,6 @@ def ShiftNegativeQuestions(dataframe):
     """ 
     converts numbers to negative numbers for specific question columns
     """
-    #negativequestions = ['q02a'
-    #                    ,'q02b'
-    #                    ,'q03a'
-    #                    ,'q03b'
-    #                    ,'q07a'
-    #                    ,'q07b'
-    #                    ,'q09a'
-    #                    ,'q09b'
-    #                    ,'q14a'
-    #                    ,'q14b'
-    #                    ,'q16a'
-    #                    ,'q16b'
-    #                    ,'q17a'
-    #                    ,'q17b'
-    #                    ,'q24a'
-    #                    ,'q24b'
-    #                    ,'q29a'
-    #                    ,'q29b'
-    #                    ,'q30a'
-    #                    ,'q30b']
-
-    #for question in negativequestions:
     for question in q.negativequestions:
         dataframe[question] = dataframe[question] * -1 + 6
 
@@ -141,11 +111,9 @@ def cleanDataPipeline(dir):
     #name can be 'pre' or 'post'
     name = ['pre', 'post']
     for n in name:
-        #pre_filenames = glob.glob('*'+n+'.csv')
         pre_filenames = glob.glob('*'+n+'.csv')
 
         raw_df = BuildAggregateDataFrame(pre_filenames, coursetype='LowerDivision', name=n)
-        #post_df = BuildAggregateDataFrame(post_filenames, coursetype='UpperDivision')
 
         #delete responses that didn't answer the checker question
         DeleteResponsesToDiscardQuestion(raw_df) 

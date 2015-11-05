@@ -11,6 +11,7 @@ import shutil
 import jinja2
 import timeit
 import eclass_item_plot as item_plot
+import table_one
 
 class NoCourseDataError(Exception):
     pass
@@ -19,20 +20,20 @@ class NoArgsError(Exception):
     pass
 
 
-def load_pre_post_data(pre, post, course):
-    """
-    loads cleaned data and returns a pandas dataframe
-    of the merged data.
-    """
-    predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
-    postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
+#def load_pre_post_data(pre, post, course):
+#    """
+#    loads cleaned data and returns a pandas dataframe
+#    of the merged data.
+#    """
+#    predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
+#    postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
 
-    if course==True:
-        pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
-        post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
-        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
-    else:
-        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
+#    if course==True:
+#        pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
+#        post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
+#        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
+#    else:
+#        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
 
 def get_sys_args():
     """
@@ -66,9 +67,6 @@ def get_GMT_year_month():
 def add_date(id):
     return id + '_' + get_GMT_year_month()
 
-# TODO: create table 1 function
-
-
 if __name__ == "__main__":
 
     timing = True
@@ -98,11 +96,11 @@ if __name__ == "__main__":
     DataCleaner.cleanDataPipeline(coursedir)
 
     # load raw data into dataframes
-    course_raw_data, pre_responses, post_responses = load_pre_post_data(pre='preMunged_Aggregate_Data.csv',post='postMunged_Aggregate_Data.csv', course=True)
+    course_raw_data, pre_responses, post_responses = utilities.load_pre_post_data(pre='preMunged_Aggregate_Data.csv',post='postMunged_Aggregate_Data.csv', course=True)
 
-    matched_count = course_raw_data.groupby('Q3_3_TEXT').Q3_3_TEXT.count()
+    course_matched_count = course_raw_data.groupby('courseID').Q3_3_TEXT.count()
 
-    historical_raw_data = load_pre_post_data(pre=pre_hist, post=post_hist)
+    historical_raw_data = utilities.load_pre_post_data(pre=pre_hist, post=post_hist, course=False)
 
     # get all unique course ideas, append the current GMT year and month
     courseIDs = list(set(course_raw_data.courseID.values))
@@ -164,7 +162,12 @@ if __name__ == "__main__":
             one_report_start = timeit.default_timer()
 
         # table 1
-        
+        print(course_matched_count)
+        precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
+
+        reported_count = 5000
+        fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)
+
 
         # create dataframe of course data
         individual_course_raw_data = course_raw_data[course_raw_data.courseID == course]
@@ -207,9 +210,6 @@ if __name__ == "__main__":
         course_item_data = item_plot.make_eclass_item_dataframe(df=individual_course_raw_data)
         
 
-        # TODO : legend isn't plotting
-        # TODO : if question text middle is > 8 words split in half again
-        # TODO : make plots bigger of itemized questions
         # plot 'What do YOU think?' question
         ####################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do YOU think?')
@@ -336,7 +336,6 @@ if __name__ == "__main__":
 
         df = hist_currentInterest.join(course_interestShift)
 
-        # TODO : remove all error calculations
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
 
@@ -377,11 +376,11 @@ if __name__ == "__main__":
         Template = TemplateEnv.get_template('template.html')
 
         for page in ['report', 'howtoread', 'analysis', 'questionlist']:
-
-            RenderedTemplate = Template.render({'title': course_dir#'school name'
+            # TODO generate better title
+            RenderedTemplate = Template.render({'title': course_dir
                             , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
                             , 'email': "eclass@colorado.edu"
-                            , 'table1': [['no'],['data']]
+                            , 'table1': table_one.table_one_data(valid_pre=precount, valid_post=postcount, valid_matched=matchedcount, reported_student_count=reported_count, participating_student_fraction=fraction_participating)
                             , 'low_N' : True if course_N < 10 else False
                             , 'questionlist': Questions.questionList()
                             , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
@@ -402,3 +401,9 @@ if __name__ == "__main__":
     
     end = timeit.default_timer()
     print("Total run time: ", end - start)
+
+
+     #precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
+
+     #   reported_count = 5000
+     #   fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)

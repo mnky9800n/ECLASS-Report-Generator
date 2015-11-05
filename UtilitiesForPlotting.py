@@ -225,14 +225,6 @@ def makeNewLine(s, spliton=6):
     -------------------
     s : string
     string with newline added"""
-    #_middleSpaceIndex = s[0:int(len(s)/2)].rfind(' ')
-    
-    #if _middleSpaceIndex == -1:
-    #    pass
-    #else:
-    #    s = s[0:_middleSpaceIndex] + '\n' + s[_middleSpaceIndex:]
-    
-    #return s
     s_newline = ''
     for n,x in enumerate(s.split(' ')):
         if n < spliton:
@@ -374,7 +366,16 @@ def plot_overall(hist_df, course_df):
     ax.set_ylabel('Fraction of statements\nwith expert-like responses')
     return ax.get_figure()
 
-def load_pre_post_data(pre, post):
+#def load_pre_post_data(pre, post):
+#    """
+#    loads cleaned data and returns a pandas dataframe
+#    of the merged data.
+#    """
+#    predata = pd.read_csv(pre)
+#    postdata = pd.read_csv(post)
+
+#    return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+def load_pre_post_data(pre, post, course):
     """
     loads cleaned data and returns a pandas dataframe
     of the merged data.
@@ -382,8 +383,12 @@ def load_pre_post_data(pre, post):
     predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
     postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
 
-    return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
-
+    if course==True:
+        pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
+        post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
+        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
+    else:
+        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
 
 def save_fig(fig, save_name, svg=True, hidef=False):
     """

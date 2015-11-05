@@ -18,7 +18,7 @@ def make_itemized_single_figure(title):
     """
     returns a matplotlib.pyplot figure and two axes instances
     """
-    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(5,17))
+    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(4,20))
 
     fig.suptitle(title, y=0.92, fontsize=20)
 
@@ -74,7 +74,7 @@ def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
     ax2_ytick_labels = []
 
     n_questions = len(qids)
-    markersize = 15
+    markersize = 12
     
     for n,q in enumerate(qids):
         y = n+offset 
@@ -125,8 +125,8 @@ def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
     ax1.set_yticks(range(0, int(n_questions/2)))
     ax2.set_yticks(range(int(n_questions/2+1)-1, n_questions))
 
-    ax1.set_yticklabels(ax1_ytick_labels, fontsize=10)
-    ax2.set_yticklabels(ax2_ytick_labels, fontsize=10)
+    ax1.set_yticklabels(ax1_ytick_labels, fontsize=12)
+    ax2.set_yticklabels(ax2_ytick_labels, fontsize=12)
 
     ax1.set_xlabel('Fraction of class with expert-like response', x=1.1, fontsize=20)
 

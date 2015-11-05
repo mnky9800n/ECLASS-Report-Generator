@@ -23,3 +23,10 @@ def fraction_of_participating_students(matched_count : int, reported_count : int
     who were reported would be participating
     """
     return float(matched_count)/float(reported_count)
+
+def table_one_data(valid_pre : int, valid_post : int, valid_matched : int, reported_student_count : int, participating_student_fraction : float):
+    """
+    contructs a zip generator that returns the data for table one
+    """
+    table_one_text = ['Number of valid pre-responses', 'Number of valid post-responses', 'Number of matched responses', 'Reported number of students in class', 'Fraction of class participating in pre and post']
+    return zip(table_one_text, [valid_pre, valid_post, valid_matched, reported_student_count, participating_student_fraction])
