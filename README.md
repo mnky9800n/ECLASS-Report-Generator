@@ -21,8 +21,8 @@ This will produce
 
 1. a folder for each class titled by the course ID as reported by Qualtrics with the month and year appended
 2. each folder will have an image directory
-3. each image directory will have the following images: currentinterest.png, declaredmajor.png, expertvsyou1.png, expertvsyou2.png, futureplans.png, gender.png, grades1.png, grades2.png, gradespart1.png, overall.png, whatdoyouthink1.png, whatdoyouthink2.png
-4. <not implemented> report.html
-5. <not implemented> howtoread.html
-6. <not implemented> questionlist.html
-7. <not implemented> analysis.html
+3. each image directory will have the following images: `currentinterest.png`, `declaredmajor.png`, `expertvsyou.png`, `futureplans.png`, `gender.png`, `grades.png`, `overall.png`, `whatdoyouthink.png`
+4. report.html
+5. howtoread.html
+6. questionlist.html
+7. analysis.html
