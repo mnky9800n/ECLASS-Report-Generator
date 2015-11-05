@@ -7,9 +7,18 @@ from Questions import Questions
 
 Questions = Questions()
 
-def make_itemized_single_figure(title):
+# TODO : make double figure itemized plot function
+# like this
+# def make_doble_figure
+# fig, ax1 = plt.subplots(1)
+# fig2, ax2 = plt.subplots(1)
+# return fig1, ax1, fig2, ax2
 
-    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(8,17))
+def make_itemized_single_figure(title):
+    """
+    returns a matplotlib.pyplot figure and two axes instances
+    """
+    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(5,17))
 
     fig.suptitle(title, y=0.92, fontsize=20)
 
@@ -17,11 +26,14 @@ def make_itemized_single_figure(title):
     ax2.grid(b=True)
 
     ax2.yaxis.tick_right()
-#     n_questions = len(data)
     
     return fig, ax1, ax2
 
 def make_eclass_item_dataframe(df):
+    """
+    creates a pandas dataframe of confidence interval data and expert like
+    data. returns a single dataframe.
+    """
     pre = UtilitiesForPlotting.expertLikeResponseDataFrame(rawdata_df=df
                                                 , CI_Calculator=UtilitiesForPlotting.confidenceInterval
                                                 , columnIDs=Questions.pre_WhatDoYouThinkQuestionIDs
@@ -39,26 +51,36 @@ def make_eclass_item_dataframe(df):
     return data
 
 def sort_qids_by_fracpre_desc(dataframe, qids, sortby='fracpre'):
+    """
+    sorts questions by their descending value in the given sortby column
+    """
     return list(dataframe.ix[qids].sort(columns=sortby, ascending=False).index)
 
+def make_legend(ax, legend_labels, colors):
+    """
+    creates a legend for itemized plots
+    """
+    ax.plot([],[], color=colors[0], linewidth=12.5, label=legend_labels[0])
+    ax.plot([],[], color=colors[1], linewidth=12.5, label=legend_labels[1])
+    ax.legend(bbox_to_anchor=(1.75,-0.05))
+
 def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
+    """
+    plots eclass plot. needs to be invoked twice to plot data sets against each other
+    """
     debug = False
-        
+    
     ax1_ytick_labels = []
     ax2_ytick_labels = []
 
-    #n_questions = len(data)
     n_questions = len(qids)
     markersize = 15
-
     
     for n,q in enumerate(qids):
         y = n+offset 
         
-        #question_text = UtilitiesForPlotting.makeNewLine(Questions.questionIDToQuestionText[q])
-        question_text = Questions.questionIDToQuestionText[q]
-        question_text = UtilitiesForPlotting.makeNewLine(question_text[:int(len(question_text)/2)]) + UtilitiesForPlotting.makeNewLine(question_text[int(len(question_text)/2):])
-        #if n < n_questions/2:
+        question_text = UtilitiesForPlotting.makeNewLine(Questions.questionIDToQuestionText[q])
+        
         if n < int(n_questions/2):
             ax=ax1
             ax1_ytick_labels.append(question_text)
@@ -103,8 +125,8 @@ def plot_itemized_data(data, offset, ax1, ax2, qids, color, grades=False):
     ax1.set_yticks(range(0, int(n_questions/2)))
     ax2.set_yticks(range(int(n_questions/2+1)-1, n_questions))
 
-    ax1.set_yticklabels(ax1_ytick_labels, fontsize=12)
-    ax2.set_yticklabels(ax2_ytick_labels, fontsize=12)
+    ax1.set_yticklabels(ax1_ytick_labels, fontsize=10)
+    ax2.set_yticklabels(ax2_ytick_labels, fontsize=10)
 
     ax1.set_xlabel('Fraction of class with expert-like response', x=1.1, fontsize=20)
 

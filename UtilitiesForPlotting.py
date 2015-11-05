@@ -204,7 +204,7 @@ def confidenceInterval(n_respondents, n_total, n_LikertLevels=3, significanceLev
     else:
         return ResponsePercent, ConfidenceInterval
 
-def makeNewLine(s):#, newlines=2):
+def makeNewLine(s, spliton=6):
     """
     Description:
     -------------------
@@ -225,14 +225,23 @@ def makeNewLine(s):#, newlines=2):
     -------------------
     s : string
     string with newline added"""
-    _middleSpaceIndex = s[0:int(len(s)/2)].rfind(' ')
+    #_middleSpaceIndex = s[0:int(len(s)/2)].rfind(' ')
     
-    if _middleSpaceIndex == -1:
-        pass
-    else:
-        s = s[0:_middleSpaceIndex] + '\n' + s[_middleSpaceIndex:]
+    #if _middleSpaceIndex == -1:
+    #    pass
+    #else:
+    #    s = s[0:_middleSpaceIndex] + '\n' + s[_middleSpaceIndex:]
     
-    return s
+    #return s
+    s_newline = ''
+    for n,x in enumerate(s.split(' ')):
+        if n < spliton:
+            s_newline += x + ' '
+        elif n % spliton == 0:
+            s_newline += x + '\n'
+        else:
+            s_newline += x + ' '
+    return s_newline
 
 def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=False):
     """
@@ -374,3 +383,19 @@ def load_pre_post_data(pre, post):
     postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
 
     return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+
+
+def save_fig(fig, save_name, svg=True, hidef=False):
+    """
+    saves a figure as a png or svg and can save a high def png version
+    """
+    if svg == True:
+        fig.savefig(save_name+'.svg', bbox_inches='tight')
+    else:
+        fig.savefig(save_name+'.png', bbox_inches='tight', dpi=55)
+
+    if hidef == False:
+        pass
+    else:
+        fig.savefig(save_name+'.png', bbox_inches='tight', dpi=160)
+

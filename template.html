@@ -20,9 +20,10 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>s
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+
                     {% for link in navbar[0] %}
-                        <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</span>
+                        <span class="icon-bar"><a href="{{ link[1] }}">{{ link[0] }}</a></span>
                     {% endfor %}
                 </button>
                 <a class="navbar-brand" href="report.html">E-CLASS</a>
@@ -49,7 +50,7 @@
             <h1>
                 Low N-value Data
             </h1>
-            <p style="padding: 50px; border: red 5px ridge">
+            <p style="padding: 20px; border: red 5px ridge">
                 The number of matched responses is low (particularly N < 10) either due to small class size or poor response rates, we caution against overgeneralizing the E-CLASS results. In cases of low N, these results can provide valuable insight into that specific group of students' ideas about experimental physics; however, these results may not generalized to the overall student body of physics students.
             </p>
 
@@ -95,15 +96,19 @@
 
                     </table>
                     <figcaption>
-                        TABLE 1. Summary of class participation. For a description of what qualifies as a valid response, see the "How to read this report" tab.
+                        <!--TABLE 1.--> Summary of class participation. For a description of what qualifies as a valid response, see the "How to read this report" tab.
                     </figcaption>
 
                 </figure>
 
                 <figure class="col-md-6">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/overall.png" alt="Overall E-CLASS Perfomance" />
+                    {% else %}
+                    <img class="img-responsive" src="images/overall.svg" alt="Overall E-CLASS Perfomance" />
+                    {% endif %}
                     <figcaption>
-                        FIG. 5. Comparison between overall pre and post scores for students' personal views on What do YOU think
+                        <!--FIG. 5.--> Comparison between overall pre and post scores for students' personal views on What do YOU think
                         when doing experiments for class? Your class (Red) is compared with all students in similar level
                         classes (Blue), (i.e., calculus-based introductory-level physics labs). The error bars indicate a 95%
                         confidence interval. The overall mean shown here averages over all students and all statements on the survey.
@@ -119,24 +124,33 @@
             <div class="row">
                 <figure class="col-md-6">
                     <!--<img class="img-responsive" src="images/whatdoyouthink1.png" />-->
-                    <img class="img-responsive" src="images/whatdoYOUThink.png" height="100%" />
+                    {% if svg == False %}
+                    <img class="img-responsive" src="images/whatdoYOUThink.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/whatdoYOUThink.svg"/>
+                    {% endif %}
                     <figcaption>
-                        FIG. 6. Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
-                        for your class (Red) and all students in similar level classes (i.e., calculus-based introductory-level) (Blue).
-                        Figures 6 and 7 should be viewed together. The circles show the pre-survey values. The arrows indicate the pre
+                        <!--FIG. 6.--> Pre/Post changes in students' personal views about "What do YOU think when doing experiments for class?"
+                        for your class (Red) and all students in similar level classes <!--(i.e., calculus-based introductory-level)--> (Blue).
+                        <!--Figures 6 and 7 should be viewed together.--> The circles show the pre-survey values. The arrows indicate the pre
                         to post changes. The shaded bars indicate a 95% confidence interval. The responses are ordered by the
                         expert-like fraction in the pre-survey.
                     </figcaption>
                 </figure>
                 <figure class="col-md-6">
-                    <img class="img-responsive" src="images/whatdoExpertsThink.png" height="100%" />
+                    {% if svg == False %}
+                    <img class="img-responsive" src="images/whatdoExpertsThink.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/whatdoExpertsThink.svg" />
+                    {% endif %}
                     <figcaption>
-                        FIG. 11. Comparison for your class between changes in students' personal views versus their views about professional
+                        <!--FIG. 11.--> <!--Comparison for your class between changes in students' personal views versus their views about professional
                         physicists. What do YOU think... (Red) shows the change in students' response to "What do YOU think when doing
                         experiments for class?" This red data is the same as the red data in Figs. 6 and 7. "What would experimental
                         physicists say..." (Green) shows the change in students response to "What would experimental physicists say about
                         their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
-                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
+                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.-->
+                        Comparison for your class (Red) between changes in the students' views about professional physicists and students in similar level classes (Black). 
                     </figcaption>
                 </figure>
                 <!--<figure class="col-md-6">
@@ -149,6 +163,42 @@
                         expert-like fraction in the pre-survey.
                     </figcaption>
                 </figure>-->
+
+
+                <!--<figure class="col-md-6">
+                    {% if svg == False %}
+                    <img class="img-responsive" src="images/versus.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/versus.svg" />
+                    {% endif %}
+                    <figcaption>
+                        FIG. 11.
+                        Comparison for your class between changes in students' personal views versus their views about professional
+                        physicists. What do YOU think... (Yellow) shows the change in students' response to "What do YOU think when doing
+                        experiments for class?" This red data is the same as the red data in the previous two figures. "What would experimental
+                        physicists say..." (Black) shows the change in students response to "What would experimental physicists say about
+                        their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
+                        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
+                    </figcaption>
+                </figure>-->
+            </div>
+            <div class="row">
+                <figure class="col-md-6">
+                    {% if svg == False %}
+                    <img class="img-responsive" src="images/versus.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/versus.svg" />
+                    {% endif %}
+                    <figcaption>
+                        <!--FIG. 11.-->
+                        Comparison for your class between changes in students' personal views versus their views about professional
+        physicists. What do YOU think... (Yellow) shows the change in students' response to "What do YOU think when doing
+        experiments for class?" This red data is the same as the red data in the previous two figures. "What would experimental
+        physicists say..." (Black) shows the change in students response to "What would experimental physicists say about
+        their research?" Figures 11 and 12 should be viewed together. The circles show the pre-survey values. The arrows
+        indicate the pre to post changes. The shaded bars indicate a 95% confidence interval.
+                    </figcaption>
+                </figure>
             </div>
         </section>
 
@@ -158,7 +208,11 @@
             </h2>
             <div class="row">
                 <figure class="col-md-6">
-                    <img class="img-responsive" src="images/grades.png" height="100%" />
+                    {% if svg == False %}
+                    <img class="img-responsive" src="images/grades.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/grades.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 8. An ordered plot of students' views of importance of different activities for earning a good grade in your class
                         and in similar level classes, which refers to the set of students in other calculus-based introductory-level classes.
@@ -212,21 +266,33 @@
             </h2>
             <div class="row">
                 <figure class="col-md-4">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/declaredmajor.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/declaredmajor.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 13. Distribution of students by current declared major. Your class (Red) refers to your own course. Similar level
                         classes (Blue) refers to a set of students in all classes at the calculus-based introductory-level.
                     </figcaption>
                 </figure>
                 <figure class="col-md-4">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/currentinterest.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/currentinterest.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 14. Students' current interest in physics. Your class (Red) refers to your own course. Similar level classes (Blue)
                         refers to a set of students in all classes at the calculus-based introductory-level.
                     </figcaption>
                 </figure>
                 <figure class="col-md-4">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/interestshift.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/interestshift.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 15. Change in students' interest in physics. Your class (Red) refers to your own course. Similar level classes
                         (Blue) refers to a set of students in all classes at the calculus-based introductory-level.
@@ -235,13 +301,21 @@
             </div>
             <div class="row">
                 <figure class="col-md-6">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/gender.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/gender.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 13. Gender distribution.
                     </figcaption>
                 </figure>
                 <figure class="col-md-6">
+                    {% if svg == False %}
                     <img class="img-responsive" src="images/futureplans.png" />
+                    {% else %}
+                    <img class="img-responsive" src="images/futureplans.svg" />
+                    {% endif %}
                     <figcaption>
                         FIG. 14. Future plans.
                     </figcaption>

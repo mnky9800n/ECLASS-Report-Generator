@@ -1,8 +1,6 @@
-﻿#import Questions
-import Questions
+﻿import Questions
 import UtilitiesForPlotting as utilities
 import DataCleaner
-#import BuildReport
 import os
 import pandas as pd
 import sys
@@ -21,7 +19,7 @@ class NoArgsError(Exception):
     pass
 
 
-def load_pre_post_data(pre, post):
+def load_pre_post_data(pre, post, course):
     """
     loads cleaned data and returns a pandas dataframe
     of the merged data.
@@ -29,7 +27,12 @@ def load_pre_post_data(pre, post):
     predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
     postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
 
-    return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+    if course==True:
+        pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
+        post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
+        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
+    else:
+        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
 
 def get_sys_args():
     """
@@ -66,7 +69,6 @@ def add_date(id):
 # TODO: create table 1 function
 
 
-
 if __name__ == "__main__":
 
     timing = True
@@ -83,6 +85,7 @@ if __name__ == "__main__":
 
 
     # plotting parameters
+    svg = False
     DPI = 60
     expectedRows_Q49 = [1.,2.,3.,4.,5.,6.]
     questionAnswers = {1.0: 'Physics', 2.0: 'Chemistry', 3.0: 'Biochemistry', 4.0: 'Biology', 5.0: 'Engineering', 6.0: 'Engineering Physics', 7.0: 'Astronomy', 8.0: 'Astrophysics', 9.0: 'Geology/geophysics', 10.0: 'Math/Applied Math', 11.0: 'Computer Science', 12.0: 'Physiology', 13.0: 'Other Science', 14.0: 'Non-science Major', 15.0: 'Open option/Undeclared'}
@@ -95,8 +98,10 @@ if __name__ == "__main__":
     DataCleaner.cleanDataPipeline(coursedir)
 
     # load raw data into dataframes
-    course_raw_data = load_pre_post_data(pre='preMunged_Aggregate_Data.csv'
-                                   ,post='postMunged_Aggregate_Data.csv')
+    course_raw_data, pre_responses, post_responses = load_pre_post_data(pre='preMunged_Aggregate_Data.csv',post='postMunged_Aggregate_Data.csv', course=True)
+
+    matched_count = course_raw_data.groupby('Q3_3_TEXT').Q3_3_TEXT.count()
+
     historical_raw_data = load_pre_post_data(pre=pre_hist, post=post_hist)
 
     # get all unique course ideas, append the current GMT year and month
@@ -120,8 +125,6 @@ if __name__ == "__main__":
                                                     qids=[i for i in hist_item_data.index if 'b' in i])
     qids_grades = item_plot.sort_qids_by_fracpre_desc(dataframe=hist_grades,
                                                     qids=[i for i in hist_grades.index if 'c' in i], sortby='fracpost')
-    #print(qids_grades)
-    #print(hist_grades)
 
     """--------------------------
     historical data calculations
@@ -159,6 +162,9 @@ if __name__ == "__main__":
         
         if timing == True:
             one_report_start = timeit.default_timer()
+
+        # table 1
+        
 
         # create dataframe of course data
         individual_course_raw_data = course_raw_data[course_raw_data.courseID == course]
@@ -199,28 +205,34 @@ if __name__ == "__main__":
 
 
         course_item_data = item_plot.make_eclass_item_dataframe(df=individual_course_raw_data)
+        
 
+        # TODO : legend isn't plotting
+        # TODO : if question text middle is > 8 words split in half again
+        # TODO : make plots bigger of itemized questions
         # plot 'What do YOU think?' question
         ####################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do YOU think?')
         item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='red')
-        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='blue')    
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory+'whatdoYOUThink.png', bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality
-        fig.savefig(image_save_directory+'highquality_whatdoYOUThink.png', bbox_inches='tight')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='black')
+        item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['red','black'])
+        utilities.save_fig(fig=fig, save_name=image_save_directory+'whatdoYOUThink', svg=svg)
 
         # plot 'What do EXPERTS think?' question
         ########################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do experts think?')
-        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='red')
-        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='blue')    
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory+'whatdoExpertsThink.png', bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality
-        fig.savefig(image_save_directory+'highquality_whatdoExpertsThink.png', bbox_inches='tight')
+        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='blue')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='black')
+        item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['blue','black'])
+        utilities.save_fig(fig=fig, save_name=image_save_directory+'whatdoExpertsThink', svg=svg)
+
+        # plot 'What do EXPERTS think?' vs 'What do YOU think?' question
+        ################################################################
+        fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do experts think? vs What do YOU think?')
+        item_plot.plot_itemized_data(data=course_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='yellow')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=[q[0:3]+'a' for q in qids_expert], color='black')
+        item_plot.make_legend(ax=ax1, legend_labels=['What do experts think?', 'What do YOU think?'], colors=['yellow','black'])
+        utilities.save_fig(fig=fig, save_name=image_save_directory+'versus', svg=svg)
 
         # plot 'grades' question
         ########################
@@ -230,58 +242,22 @@ if __name__ == "__main__":
                                                          , grades=True)
         course_grades.columns = ['cipost','fracpost']
         
-        #print(course_grades.index)
-
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='How important for earning a good grade in this class was...')
         item_plot.plot_itemized_data(data=hist_grades, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='red', grades=True)
-        item_plot.plot_itemized_data(data=course_grades, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='blue', grades=True)    
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory+'grades.png', bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality
-        fig.savefig(image_save_directory+'highquality_grades.png', bbox_inches='tight')        
-        
-
-
-        #print(hist_item_data.mean())
-        #print(course_item_data.mean())
-
-        #hist_agg = hist_item_data[qids_WHAT].mean().transpose()
-        #course_agg = course_item_data[qids_WHAT].mean().transpose()
-
-        #fracprepost = hist_agg[['fracpre', 'fracpost']].join(course_agg[['fracpre', 'fracpost']], lsuffix=' hist', rsuffix=' course')
-        #errorprepost = hist_agg[['cipre', 'cipost']].join(course_agg[['cipre', 'cipost']], lsuffix=' hist', rsuffix=' course')
-        
+        item_plot.plot_itemized_data(data=course_grades, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='blue', grades=True)
+        item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['red','blue'])
+        utilities.save_fig(fig=fig, save_name=image_save_directory+'grades', svg=svg)
 
         # aggregate 'What do YOU think' question
         agg_df = hist_item_data.join(course_item_data, lsuffix=' hist', rsuffix=' course')
-        #agg_df = agg_df.ix[[question[:-2] for question in Questions.pre_WhatDoYouThinkQuestionIDs]]
         agg_df = agg_df.ix[qids_WHAT]
         
-        #print(agg_df)
         agg_df = agg_df.mean()
-
-
-
-        #print(agg_df)
-
-        #print(agg_df['cipre [1]'])
-
-        #data = np.array([[agg_df[2], agg_df[6]]
-        #                ,[agg_df[3], agg_df[7]]])
-        #error = np.array([[agg_df[0], agg_df[1]]
-        #                  , [agg_df[4], agg_df[5]]])
-
-        #print(agg_df)
 
         data = np.array([[agg_df['fracpre hist'], agg_df['fracpre course']]
                          ,[agg_df['fracpost hist'], agg_df['fracpost course']]])
         error = np.array([[agg_df['cipre hist'], agg_df['cipre course']]
                           ,[agg_df['cipost hist'], agg_df['cipost course']]]).transpose()
-
-        #print(data)
-        #print(error)
-
         data = pd.DataFrame(data)
         data.index = ['pre', 'post']
         data.columns = ['Similar level courses', 'Your course']
@@ -293,14 +269,8 @@ if __name__ == "__main__":
         ax.legend(loc='lower left')
         ax.set_xticklabels(labels=['pre','post'], rotation=0)
         ax.set_ylabel('Fraction of statements\nwith expert-like responses')
-        fig = ax.get_figure()
 
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory+'overall.png', bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality
-        fig.savefig(image_save_directory+'highquality_overall.png', bbox_inches='tight')
-
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'overall',svg=svg)
         del agg_df, data, error, fig, ax
 
         course_gender = individual_course_raw_data.groupby('Q54').Q54.size()/individual_course_raw_data.Q54.size
@@ -319,15 +289,8 @@ if __name__ == "__main__":
         ax.set_ylim(0,1)
         ax.set_ylabel('Fraction of Students')
         ax.set_xticklabels(['Female', 'Male', 'Prefer not to say'], rotation=45)
-        fig = ax.get_figure()
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory + 'gender.png',bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality  
-        fig.savefig(image_save_directory + 'highquality_gender.png',bbox_inches='tight')
-
-        # plot futureplans.png
-        # TODO : WTF is individual_course_DF
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'gender', svg=svg)
+        
         course_futurePlans = utilities.futurePlansData(individual_course_raw_data)
 
         # this line should probably go into utilities.futurePlansData
@@ -340,14 +303,7 @@ if __name__ == "__main__":
         ax.set_title('Future Plans\nN(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
         ax.set_xlim(0,1)
         ax.set_xlabel('Fraction of Students')
-        fig = ax.get_figure()
-
-        # TODO: function out the savefig function
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory + 'futureplans.png',bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality 
-        fig.savefig(image_save_directory + 'highquality_futureplans.png',bbox_inches='tight')
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'futureplans', svg=svg)
 
         # plot interestshift.png
         course_valcnt = individual_course_raw_data['Q50'].value_counts()
@@ -368,15 +324,7 @@ if __name__ == "__main__":
         ax.set_xticklabels(['Increased', 'Stayed the same', 'Decreased'], rotation=45)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('During the semester, my interest in physics. . .\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
-        fig = ax.get_figure()
-
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory + 'interestshift.png',bbox_inches='tight',dpi=DPI)
-    
-        # save fig with larger dpi for publication quality 
-        fig.savefig(image_save_directory + 'highquality_interestshift.png',bbox_inches='tight')
-
-
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'interestshift', svg=svg)
 
         # plot currentinterest.png
         course_valcnt = individual_course_raw_data['Q49'].value_counts()
@@ -388,6 +336,7 @@ if __name__ == "__main__":
 
         df = hist_currentInterest.join(course_interestShift)
 
+        # TODO : remove all error calculations
         errors = df[['conf (similar)', 'conf (your)']].copy()
         errors.columns = ['Similar level classes', 'Your class']
 
@@ -397,15 +346,7 @@ if __name__ == "__main__":
         ax.set_xticklabels(['Very Low', 'Low', 'Moderate', 'High', 'Very High', 'N/A'], rotation=45)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('Currrently, what is your interest in physics?\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
-        fig = ax.get_figure()
-
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory + 'currentinterest.png',bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality 
-        fig.savefig(image_save_directory + 'highquality_currentinterest.png',bbox_inches='tight')
-
-
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'currentinterest', svg=svg)
 
         # plot declaredmajor.png
         course_valcnt = individual_course_raw_data['Q47'].value_counts()
@@ -428,26 +369,13 @@ if __name__ == "__main__":
         ax.set_xticklabels([qstr for qstr in questionAnswers.values()], rotation=90)
         ax.set_ylabel('Fraction of Students')
         ax.set_title('What is your current major?\n N(yourClass) = {yourClass}, N(similarLevel) = {similarLevel}'.format(yourClass=course_N, similarLevel=historical_N))
-        
-        fig = ax.get_figure()
-
-        # save fig  with smaller dpi for faster loading on browsers
-        fig.savefig(image_save_directory + 'declaredmajor.png',bbox_inches='tight', dpi=DPI)
-    
-        # save fig with larger dpi for publication quality 
-        fig.savefig(image_save_directory + 'highquality_declaredmajor.png',bbox_inches='tight')
-
-        # copy the static pages into the course directory
-        #for item in ['howtoread.html', 'analysis.html', 'questionlist.html']:
-        #    shutil.copy2(item, course_dir)
+        utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'declaredmajor', svg=svg)
 
         # generate the report.html
-       # print(os.getcwd())
         TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator")
         TemplateEnv = jinja2.Environment(loader=TemplateLoader)
         Template = TemplateEnv.get_template('template.html')
 
-        #for page in ['report.html', 'howtoread.html', 'analysis.html', 'questionlist.html']:
         for page in ['report', 'howtoread', 'analysis', 'questionlist']:
 
             RenderedTemplate = Template.render({'title': course_dir#'school name'
@@ -458,11 +386,11 @@ if __name__ == "__main__":
                             , 'questionlist': Questions.questionList()
                             , 'navbar': zip(["Report", "How to Read This Report", "How This Report was Analyzed", "Question List"]
                                               ,["report.html", "howtoread.html", "analysis.html", "questionlist.html"])
-                            , 'page': page})
+                            , 'page': page
+                            , 'svg' : svg})
             with open(course_dir + '//' + page + '.html', 'wb+') as report:
                 report.write(RenderedTemplate.encode())
                 report.close()
-
 
         # delete dataframe of course data
         del course_df, futurePlans_df, gender_df, df
