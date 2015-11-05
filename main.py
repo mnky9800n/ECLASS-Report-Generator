@@ -1,4 +1,7 @@
-﻿import Questions
+﻿r'C:/Users/John/Source/Repos/ECLASS-Report-Generator/data/historical_data/preMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data\historical_data\postMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data nothing'
+
+r'C:\Users\John\Source\Repos\ECLASS-Report-Generator\data\intro_new\preMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data\intro_new\postMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data\intro_new\ nothing'
+import Questions
 import UtilitiesForPlotting as utilities
 import DataCleaner
 import os
@@ -20,20 +23,6 @@ class NoArgsError(Exception):
     pass
 
 
-#def load_pre_post_data(pre, post, course):
-#    """
-#    loads cleaned data and returns a pandas dataframe
-#    of the merged data.
-#    """
-#    predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
-#    postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
-
-#    if course==True:
-#        pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
-#        post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
-#        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
-#    else:
-#        return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
 
 def get_sys_args():
     """
@@ -89,7 +78,7 @@ if __name__ == "__main__":
     questionAnswers = {1.0: 'Physics', 2.0: 'Chemistry', 3.0: 'Biochemistry', 4.0: 'Biology', 5.0: 'Engineering', 6.0: 'Engineering Physics', 7.0: 'Astronomy', 8.0: 'Astrophysics', 9.0: 'Geology/geophysics', 10.0: 'Math/Applied Math', 11.0: 'Computer Science', 12.0: 'Physiology', 13.0: 'Other Science', 14.0: 'Non-science Major', 15.0: 'Open option/Undeclared'}
     expectedRows_Q47 = [1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.,15.]
 
-    main, pre_hist, post_hist, coursedir, instructordata = get_sys_args() #wtf is main?
+    main, pre_hist, post_hist, coursedir, instructordata = get_sys_args()
 
     
     # clean all data from current semester and prepare for plotting
@@ -154,15 +143,12 @@ if __name__ == "__main__":
     history_futureplans_df = pd.DataFrame({'Similar level classes':historical_futurePlans[:,0]}
                                 , index=historical_futurePlans[:,1]).astype('float64')
 
-    #print("Historical data loaded and calculated. . .")
-
     for course, ID_date in zip(courseIDs,courseIDs_Date):
         
         if timing == True:
             one_report_start = timeit.default_timer()
 
         # table 1
-        print(course_matched_count)
         precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
 
         reported_count = 5000
@@ -213,25 +199,25 @@ if __name__ == "__main__":
         # plot 'What do YOU think?' question
         ####################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do YOU think?')
-        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='red')
-        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='black')
+        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='black')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_WHAT, color='red')
         item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['red','black'])
         utilities.save_fig(fig=fig, save_name=image_save_directory+'whatdoYOUThink', svg=svg)
 
         # plot 'What do EXPERTS think?' question
         ########################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do experts think?')
-        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='blue')
-        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='black')
+        item_plot.plot_itemized_data(data=hist_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='black')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='blue')
         item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['blue','black'])
         utilities.save_fig(fig=fig, save_name=image_save_directory+'whatdoExpertsThink', svg=svg)
 
         # plot 'What do EXPERTS think?' vs 'What do YOU think?' question
         ################################################################
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='What do experts think? vs What do YOU think?')
-        item_plot.plot_itemized_data(data=course_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='yellow')
-        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=[q[0:3]+'a' for q in qids_expert], color='black')
-        item_plot.make_legend(ax=ax1, legend_labels=['What do experts think?', 'What do YOU think?'], colors=['yellow','black'])
+        item_plot.plot_itemized_data(data=course_item_data, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_expert, color='blue')
+        item_plot.plot_itemized_data(data=course_item_data, offset=-0.2, ax1=ax1, ax2=ax2, qids=[q[0:3]+'a' for q in qids_expert], color='red')
+        item_plot.make_legend(ax=ax1, legend_labels=['What do experts think?', 'What do YOU think?'], colors=['blue','red'])
         utilities.save_fig(fig=fig, save_name=image_save_directory+'versus', svg=svg)
 
         # plot 'grades' question
@@ -243,9 +229,9 @@ if __name__ == "__main__":
         course_grades.columns = ['cipost','fracpost']
         
         fig, ax1, ax2 = item_plot.make_itemized_single_figure(title='How important for earning a good grade in this class was...')
-        item_plot.plot_itemized_data(data=hist_grades, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='red', grades=True)
-        item_plot.plot_itemized_data(data=course_grades, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='blue', grades=True)
-        item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['red','blue'])
+        item_plot.plot_itemized_data(data=hist_grades, offset=0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='black', grades=True)
+        item_plot.plot_itemized_data(data=course_grades, offset=-0.2, ax1=ax1, ax2=ax2, qids=qids_grades, color='yellow', grades=True)
+        item_plot.make_legend(ax=ax1, legend_labels=['Your Course', 'Similar Courses'], colors=['yellow','black'])
         utilities.save_fig(fig=fig, save_name=image_save_directory+'grades', svg=svg)
 
         # aggregate 'What do YOU think' question
@@ -401,9 +387,3 @@ if __name__ == "__main__":
     
     end = timeit.default_timer()
     print("Total run time: ", end - start)
-
-
-     #precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
-
-     #   reported_count = 5000
-     #   fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)

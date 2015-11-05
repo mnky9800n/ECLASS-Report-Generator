@@ -114,6 +114,7 @@ def cleanDataPipeline(dir):
         pre_filenames = glob.glob('*'+n+'.csv')
 
         raw_df = BuildAggregateDataFrame(pre_filenames, coursetype='LowerDivision', name=n)
+        #post_df = BuildAggregateDataFrame(post_filenames, coursetype='UpperDivision')
 
         #delete responses that didn't answer the checker question
         DeleteResponsesToDiscardQuestion(raw_df) 
@@ -142,5 +143,6 @@ def cleanDataPipeline(dir):
 
 if __name__ == "__main__":
 
-    cleanDataPipeline(dir='C:\\Users\\John\\Desktop\\upper vs lower\\intro_new')
+    #cleanDataPipeline(dir='C:\\Users\\John\\Desktop\\upper vs lower\\intro_new')
+    cleanDataPipeline(dir=r'C:\Users\John\OneDrive\Work\educational data mining consulting\CU ECLASS\upper vs lower\raw\intro_new')
 

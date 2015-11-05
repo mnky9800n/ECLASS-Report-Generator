@@ -23,14 +23,18 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="full_text_questions.txt" />
-    <Content Include="index.html" />
-    <Content Include="template_original_.html" />
+    <Content Include="index_creator\directory_template.html" />
+    <Content Include="program related data\full_text_questions.txt" />
+    <Content Include="index_creator\index.html" />
+    <Content Include="program related data\template_original_.html" />
     <Content Include="template.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataCleaner.py" />
     <Compile Include="eclass_item_plot.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="index_creator\index_creator.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main.py">
@@ -43,6 +47,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UtilitiesForPlotting.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="index_creator\" />
+    <Folder Include="program related data\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
