@@ -357,12 +357,13 @@ if __name__ == "__main__":
         utilities.save_fig(fig=ax.get_figure(), save_name=image_save_directory+'declaredmajor', svg=svg)
 
         # generate the report.html
+        # TODO : change template location for deployment
         TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator")
         TemplateEnv = jinja2.Environment(loader=TemplateLoader)
         Template = TemplateEnv.get_template('template.html')
 
         for page in ['report', 'howtoread', 'analysis', 'questionlist']:
-            # TODO generate better title
+            # TODO : generate better title
             RenderedTemplate = Template.render({'title': course_dir
                             , 'link': [[course_dir+'//'+page+'.html' for page in ['report', 'howtoread', 'analysis', 'questionlist']]]*2
                             , 'email': "eclass@colorado.edu"
