@@ -30,6 +30,8 @@
     <Content Include="template.html" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="data shaping\flatten_data.py" />
+    <Compile Include="data shaping\separate_upper_lower.py" />
     <Compile Include="DataCleaner.py" />
     <Compile Include="eclass_item_plot.py">
       <SubType>Code</SubType>
@@ -50,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="index_creator\" />
+    <Folder Include="data shaping\" />
     <Folder Include="program related data\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
