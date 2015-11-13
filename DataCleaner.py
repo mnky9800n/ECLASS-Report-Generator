@@ -9,7 +9,23 @@ import pandas as pd
 import hashlib
 import Questions
 
+class EmptyDataFrameError(Exception):
+    pass
+
 q = Questions.Questions()
+
+#def rename_filename(name, initial_split):
+
+#    return '-'.join(name.split(initial_split)[1].split('-'[:-1]))
+
+
+def get_unique_id(s):
+    """
+    returns unique id
+    """
+    return s.split('-')[-1].split('.')[0]
+
+
 
 def BuildAggregateDataFrame(filenames, coursetype, name):
     """
@@ -18,13 +34,38 @@ def BuildAggregateDataFrame(filenames, coursetype, name):
     """
     df = pd.DataFrame()
     for filename in filenames:
-        concat_df = pd.read_csv(filename)
-        
-        concat_df['courseID'] = filename.split(name)[0]
+        #concat_df = pd.read_csv(filename)
+        concat_df = pd.read_csv(filename, dtype={'Q3_3_TEXT':str})
+
+        #print(concat_df.Q3_3_TEXT)
+        #import sys
+        #sys.exit()
+
+        #print(filename.split('-'))
+
+
+        courseID = '-'.join(filename.split(name)[1].split('-')[:-1])
+        #courseID = '-'.join(filename.split(name)[1].split('-')[-1])
+        #print(filename)
+        #print('-'.join(filename.split(name)[1].split('-')[:-1]))
+        ##print(rename_filename(name=filename, initial_split=name))
+        #import sys
+        #sys.exit()
+
+        ##concat_df['courseID'] = filename.split(name)[0]
+        #concat_df['courseID'] = filename.split(name)[1]
+        concat_df['courseID'] = courseID
+        #concat_df['courseID'] = courseID
         concat_df['coursetype'] = coursetype
+
+        concat_df['survey_id'] = get_unique_id(filename)
         concat_df.Q3_3_TEXT = concat_df.Q3_3_TEXT.astype(str)
         df = pd.concat([df, concat_df])
-    return df
+
+    if df.empty:
+        raise EmptyDataFrameError('No data was loaded. \nfilenames: {filenames} \nCheck case sensitivity'.format(filenames=filenames))
+    else:
+        return df
 
 def DeleteResponsesToDiscardQuestion(dataframe):
     dataframe = dataframe[dataframe.q40a != 4]
@@ -109,9 +150,9 @@ def cleanDataPipeline(dir):
     os.chdir(dir)
 
     #name can be 'pre' or 'post'
-    name = ['pre', 'post']
+    name = ['PRE','POST']#['pre', 'post']
     for n in name:
-        pre_filenames = glob.glob('*'+n+'.csv')
+        pre_filenames = glob.glob('*'+n+'*'+'.csv')
 
         raw_df = BuildAggregateDataFrame(pre_filenames, coursetype='LowerDivision', name=n)
         #post_df = BuildAggregateDataFrame(post_filenames, coursetype='UpperDivision')
@@ -120,7 +161,7 @@ def cleanDataPipeline(dir):
         DeleteResponsesToDiscardQuestion(raw_df) 
 
         #Delete Not Needed Columns
-        DeleteNotNeededColumns(raw_df)
+        #DeleteNotNeededColumns(raw_df)
 
         #Merge Questions
         MergeQuestionResponses(raw_df)
@@ -135,7 +176,7 @@ def cleanDataPipeline(dir):
         DeleteEmptyResponses(raw_df)
 
         #convert IDs to ints (some IDs have strings)
-        raw_df.Q3_3_TEXT = raw_df.Q3_3_TEXT.apply(strtoint)
+        #raw_df.Q3_3_TEXT = raw_df.Q3_3_TEXT.apply(strtoint)
 
         #write munged DataFrame to CSV
         SaveDataFrameToCSV(raw_df, n)

@@ -13,7 +13,7 @@
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId />
     <InterpreterVersion />
-    <CommandLineArguments>C:/Users/John/Source/Repos/ECLASS-Report-Generator/data/historical_data/preMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data\historical_data\postMunged_Aggregate_Data.csv C:\Users\John\Source\Repos\ECLASS-Report-Generator\data nothing</CommandLineArguments>
+    <CommandLineArguments>C:\Users\eclass\Desktop\ECLASS\historical-data\upper\preMunged_Aggregate_Data.csv C:\Users\eclass\Desktop\ECLASS\historical-data\upper\postMunged_Aggregate_Data.csv C:\Users\eclass\Desktop\ECLASS\Fall2015Files_flat\upper C:\Users\eclass\Desktop\ECLASS\MasterFile.csv \\jilau1\eclass\public_html</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />

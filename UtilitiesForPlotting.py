@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
 
+class EmptyDataFrameError(Exception):
+    pass
+
 """
  The following process describes the pipeline for creating plots outside of the reporting
  environment.
@@ -261,7 +264,6 @@ def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=Fal
     """
     _data = []
     
-    
     for col in columnIDs:
         _n_expertLike = rawdata_df[rawdata_df[col] == 5][col].size
         _n_total = rawdata_df[col].size
@@ -283,7 +285,7 @@ def expertLikeResponseDataFrame(rawdata_df, columnIDs, CI_Calculator, grades=Fal
         data_df = pd.DataFrame({'Fraction of Students with Expert Like Response':_data[:,1].astype('float64')
                        , 'Confidence Interval':_data[:,2].astype('float64')}
                       , index=[d for d in _data[:,0]])
-
+    
     return data_df
 
 def futurePlansData(df):
@@ -375,19 +377,47 @@ def plot_overall(hist_df, course_df):
 #    postdata = pd.read_csv(post)
 
 #    return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+
+
 def load_pre_post_data(pre, post, course):
     """
     loads cleaned data and returns a pandas dataframe
     of the merged data.
     """
-    predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
-    postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
+
+    #dtype={'ID': object}
+
+    #predata = pd.read_csv(pre)#'preMunged_Aggregate_Data.csv')
+    #postdata = pd.read_csv(post)#'postMunged_Aggregate_Data.csv')
+
+    predata = pd.read_csv(pre, dtype={'Q3_3_TEXT':str})#'preMunged_Aggregate_Data.csv')
+    postdata = pd.read_csv(post, dtype={'Q3_3_TEXT':str})#'postMunged_Aggregate_Data.csv')
 
     if course==True:
+        #print(predata)
+        #df = predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+        #print(df)
+        ##print(df)
+        ##print(predata.courseID.ix[0])
+        ###print(postdata.courseID.ix[0])
+        ##print(predata.Q3_3_TEXT)
+        ##print(postdata.Q3_3_TEXT)
+        #import sys
+        #sys.exit()
         pre_responses = predata.groupby('courseID').Q3_3_TEXT.count()
         post_responses = postdata.groupby('courseID').Q3_3_TEXT.count()
         return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']), pre_responses, post_responses
     else:
+        ##print(predata.ix[0:10].courseID)
+        ##print(postdata.ix[0:10].courseID)
+        #print(predata.merge(postdata, on=['Q3_3_TEXT', 'courseID']))
+        #import sys
+        #sys.exit()
+
+        #df = predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
+        #print(df)
+        #import sys
+        #sys.exit()
         return predata.merge(postdata, on=['Q3_3_TEXT', 'courseID'])
 
 def save_fig(fig, save_name, svg=True, hidef=False):

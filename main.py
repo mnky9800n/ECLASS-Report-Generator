@@ -19,9 +19,14 @@ import table_one
 class NoCourseDataError(Exception):
     pass
 
-class NoArgsError(Exception):
+class ArgsError(Exception):
     pass
 
+class TooManyArgsError(Exception):
+    pass
+
+class OldAggregateFilesExistError(Exception):
+    pass
 
 
 def get_sys_args():
@@ -32,16 +37,19 @@ def get_sys_args():
     """
     args = [arg for arg in sys.argv]
 
-    if len(args) == 5:#4: apparently main.py is an argument too. didn't know that.
+    if len(args) == 6:#4: apparently main.py is an argument too. didn't know that.
         return args
     else:
-        raise NoArgsError("""
-        You must provide 4 data source files
+        raise ArgsError("""
+        You must provide 4 data source file locations and 1 target directory for reports
         as CSVs in the following order:
-        pre-historical data
-        post-historical data
-        course data directory
-        instructor survey dat
+
+        1. pre-historical data
+        2. post-historical data
+        3. course data directory
+        4. instructor survey data
+        5. report target directory
+
         You have provided {length} arguments instead.
         These arguments are: {args}
         """.format(length=len(args), args=str(args)))
@@ -54,7 +62,10 @@ def get_GMT_year_month():
     return str(t.tm_year) + '_' + str(t.tm_mon)
 
 def add_date(id):
-    return id + '_' + get_GMT_year_month()
+    try:
+        return id + '_' + get_GMT_year_month()
+    except TypeError:
+        raise OldAggregateFilesExistError('You need to delete the pre/post Aggregate files that were generated.')
 
 if __name__ == "__main__":
 
@@ -67,8 +78,6 @@ if __name__ == "__main__":
     # object instantiation (not neccessary)
     Questions = Questions.Questions()
 
-    # directory parameters
-    parent_dir = os.getcwd() + '\\data'
 
 
     # plotting parameters
@@ -78,21 +87,34 @@ if __name__ == "__main__":
     questionAnswers = {1.0: 'Physics', 2.0: 'Chemistry', 3.0: 'Biochemistry', 4.0: 'Biology', 5.0: 'Engineering', 6.0: 'Engineering Physics', 7.0: 'Astronomy', 8.0: 'Astrophysics', 9.0: 'Geology/geophysics', 10.0: 'Math/Applied Math', 11.0: 'Computer Science', 12.0: 'Physiology', 13.0: 'Other Science', 14.0: 'Non-science Major', 15.0: 'Open option/Undeclared'}
     expectedRows_Q47 = [1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.,15.]
 
-    main, pre_hist, post_hist, coursedir, instructordata = get_sys_args()
-
+    main, pre_hist, post_hist, coursedir, instructordata, report_target_directory = get_sys_args()
     
+
+    # directory parameters
+    #parent_dir = os.getcwd() + '\\data'
+    parent_dir = report_target_directory
+
     # clean all data from current semester and prepare for plotting
     DataCleaner.cleanDataPipeline(coursedir)
 
     # load raw data into dataframes
-    course_raw_data, pre_responses, post_responses = utilities.load_pre_post_data(pre='preMunged_Aggregate_Data.csv',post='postMunged_Aggregate_Data.csv', course=True)
+    #course_raw_data, pre_responses, post_responses = utilities.load_pre_post_data(pre='preMunged_Aggregate_Data.csv',post='postMunged_Aggregate_Data.csv', course=True)
+    course_raw_data, pre_responses, post_responses = utilities.load_pre_post_data(pre='PREMunged_Aggregate_Data.csv',post='POSTMunged_Aggregate_Data.csv', course=True)
 
     course_matched_count = course_raw_data.groupby('courseID').Q3_3_TEXT.count()
 
     historical_raw_data = utilities.load_pre_post_data(pre=pre_hist, post=post_hist, course=False)
 
+    master_file = pd.read_csv(instructordata, skiprows=1)
+    master_file['PreSurveyID'] = master_file['PreSurveyID'].apply(lambda x: x[3:])
     # get all unique course ideas, append the current GMT year and month
     courseIDs = list(set(course_raw_data.courseID.values))
+
+    ##print(course_raw_data)
+    #print(courseIDs)
+    #import sys
+    #sys.exit()
+
     courseIDs_Date = [m for m in map(add_date, courseIDs)]
 
     #make historical itemized data plot
@@ -148,18 +170,42 @@ if __name__ == "__main__":
         if timing == True:
             one_report_start = timeit.default_timer()
 
-        # table 1
-        precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
-
-        reported_count = 5000
-        fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)
-
-
         # create dataframe of course data
         individual_course_raw_data = course_raw_data[course_raw_data.courseID == course]
 
+        #print(individual_course_raw_data[['survey_id_x','survey_id_y']].head())
+
+        #print(master_file.columns)
+        #print(master_file['PreSurveyID'].apply(lambda x: x[3:]))
+        #print(individual_course_raw_data['survey_id_x'])
+        #print(master_file[ master_file['PreSurveyID']==individual_course_raw_data['survey_id_x'].head(1)[0][3:]])
+        #print(master_file[master_file['PreSurveyID']==individual_course_raw_data['survey_id_x'].iloc[0]]['Number of Students in Course'].iloc[0])
+        reported_count = master_file[master_file['PreSurveyID']==individual_course_raw_data['survey_id_x'].iloc[0]]['Number of Students in Course'].iloc[0]
         # calculate n-values for course data
         course_N = max(individual_course_raw_data.count())
+
+
+       
+           
+        #print(pre_responses['survey_id'])
+
+        #print(course_raw_data[course_raw_data.courseID==course]['survey_id'])
+        # table 1
+        precount, postcount, matchedcount = table_one.get_counts_from_raw_data(pre=pre_responses, post=post_responses, matched=course_matched_count, course_id=course)
+
+        #print(course)
+        #print(course_raw_data.head())
+
+        #reported_count = 5000
+        #reported_count = table_one.get_reported_student_count()
+        #reported_count = table_one.get_reported_student_count(df=master_file, course_id=course)
+
+        #fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)
+        fraction_participating = table_one.fraction_of_participating_students(matched_count=matchedcount, reported_count=reported_count)
+
+
+
+
         if course_N == 0:
             #raise NoCourseDataError("There was no data for course '{CourseName}'.".format(CourseName=course))
             print("There was no data for course '{CourseName}'.\nMoving to next course data. . .".format(CourseName=course))
@@ -188,9 +234,13 @@ if __name__ == "__main__":
         print(image_save_directory)
 
         # copy stock images
-        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_2D_pre_post_Hist.png', image_save_directory)
-        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_Interleaved_pre_post_Hist.png', image_save_directory)
-        shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_pre_post_change.png', image_save_directory)
+        stock_image_dir = 'C:\\Users\\eclass\\Desktop\\ECLASS\\report generatory\\stock images\\'
+        #shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_2D_pre_post_Hist.png', image_save_directory)
+        #shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_Interleaved_pre_post_Hist.png', image_save_directory)
+        #shutil.copy(parent_dir + '\\stock images\\' + 'Single_Question_pre_post_change.png', image_save_directory)
+        shutil.copy(stock_image_dir + 'Single_Question_2D_pre_post_Hist.png', image_save_directory)
+        shutil.copy(stock_image_dir + 'Single_Question_Interleaved_pre_post_Hist.png', image_save_directory)
+        shutil.copy(stock_image_dir + 'Single_Question_pre_post_change.png', image_save_directory)
 
 
         course_item_data = item_plot.make_eclass_item_dataframe(df=individual_course_raw_data)
@@ -358,7 +408,8 @@ if __name__ == "__main__":
 
         # generate the report.html
         # TODO : change template location for deployment
-        TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator")
+        #TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\John\\Source\\Repos\\ECLASS-Report-Generator")
+        TemplateLoader = jinja2.FileSystemLoader(searchpath="C:\\Users\\eclass\\Source\\Repos\\ECLASS-Report-Generator")
         TemplateEnv = jinja2.Environment(loader=TemplateLoader)
         Template = TemplateEnv.get_template('template.html')
 

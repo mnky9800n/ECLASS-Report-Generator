@@ -1,4 +1,4 @@
-
+﻿
 import pandas
 
 def get_counts_from_raw_data(pre : pandas.DataFrame, post: pandas.DataFrame, matched : pandas.DataFrame, course_id : str):
@@ -9,13 +9,22 @@ def get_counts_from_raw_data(pre : pandas.DataFrame, post: pandas.DataFrame, mat
     pre_count = pre.ix[course_id]
     post_count = post.ix[course_id]
     matched_count = matched.ix[course_id]
+    #print(matched_count)
     return pre_count, post_count, matched_count
+
+#def split_course_id(s):
+#    """
+#    splits course ids
+#    """
+#    s2 = s.split('_')
+#    s3 = 
 
 def get_reported_student_count(df : pandas.DataFrame, course_id : str):
     """
     returns reported count of students who will participate
     """
-    return df.ix[course_id]
+    #return df.ix[course_id]
+    #return df.
 
 def fraction_of_participating_students(matched_count : int, reported_count : int):
     """
@@ -30,3 +39,9 @@ def table_one_data(valid_pre : int, valid_post : int, valid_matched : int, repor
     """
     table_one_text = ['Number of valid pre-responses', 'Number of valid post-responses', 'Number of matched responses', 'Reported number of students in class', 'Fraction of class participating in pre and post']
     return zip(table_one_text, [valid_pre, valid_post, valid_matched, reported_student_count, participating_student_fraction])
+
+#def get_reported_count(df : pandas.DataFrame, course_id : str):
+#    """
+#    returns the number of students reported by the the instructor
+#    """
+#    df[df['course id']==course_id]['column for N']
